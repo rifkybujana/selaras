@@ -5,10 +5,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [Header("Input Settings")]
-
-    [Tooltip("Batas waktu minimal untuk player dikatakan sedang menahan mousenya")]
-    [Range(0, 1)] [SerializeField] private float buttonHoldMin = 0.3f;
+    [SerializeField] private PlayerInput playerInput = new PlayerInput();
 
     [Space(10)] [Header("Player Movement and Controll")]
     
@@ -29,12 +26,6 @@ public class PlayerController : MonoBehaviour
     //atur ini untuk mengkontrol kecepatan player
     private float currentSpeed;
 
-    //Berapa lama player menekan mousenya
-    private float buttonHoldTime;
-
-    //sedang menekan mouse
-    private bool isTapping;
-
     #endregion
 
     // Start is called before the first frame update
@@ -48,11 +39,39 @@ public class PlayerController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        PlayerInput();
+        GetInput();
 
         SetVelocity();
     }
 
+
+    /// <summary>
+    /// Mendapatkan Input dari player
+    /// Simultaneous Tap = Tambah Kecepatan
+    /// Hold Mouse button = Rem
+    /// </summary>
+    private void GetInput()
+    {
+        //Jika player menekan mouse kiri
+        if (Input.GetMouseButton(0))
+        {
+            //jika player menekannya dalam waktu yang cukup lama maka rem
+            //waktu meneakan > waktu minimal untuk dikatakan sedang ditahan
+            if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin) Brake();
+
+            playerInput.buttonHoldTime += Time.deltaTime;
+        }
+
+        //jika player berhenti menekan mouse kiri
+        if (Input.GetMouseButtonUp(0))
+        {
+            //Jika player menekannya hanya sebentar maka tambah kecepatan
+            //waktu menekan < waktu minimal untuk dikatakan sedang ditahan
+            if(playerInput.buttonHoldTime < playerInput.buttonHoldMin) AddSpeed();
+
+            playerInput.buttonHoldTime = 0;
+        }
+    }
 
     /// <summary>
     /// Mengatur kecepatan player, dan mengembalikan kecepatan kembali ke normal
@@ -60,48 +79,17 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void SetVelocity()
     {
-        if(currentSpeed != defaultSpeed && !isTapping)
+        //Mengembalikan kecepatan player ke normal / kecepatan default
+        //jika sedang tidak ada interaksi dan juga kecepatannya tidak sama dengan kecepatan normal
+        if(currentSpeed != defaultSpeed && playerInput.buttonHoldTime == 0)
         {
-            //mengembalikan kecepatan ke normal
-            //saat kecepatan lebih kecil dari kecepatan normal maupun lebih besar dari kecepatan normal
             currentSpeed = currentSpeed < defaultSpeed ?
                            Mathf.Clamp(currentSpeed + Time.deltaTime * 2, 0, defaultSpeed) :
                            Mathf.Clamp(currentSpeed - Time.deltaTime * 2, defaultSpeed, speedThreshold);
         }
 
-
+        //set kecepatan player
         rb.velocity = new Vector2(currentSpeed, rb.velocity.y);
-    }
-
-    /// <summary>
-    /// mendapatkan input dari player lalu mengkontrol player berdasarkan input tersebut
-    /// </summary>
-    private void PlayerInput()
-    {
-        //cek jika player sedang menekan mouse
-        if (Input.GetMouseButtonDown(0)) isTapping = true;
-
-        //jika mouse dilepas
-        //dan jika player tidak menahan mousenya, maka kecepatan akan bertambah
-        if (Input.GetMouseButtonUp(0))
-        {
-            if(buttonHoldTime < buttonHoldMin) AddSpeed(); 
-
-            //reset kembali isTapping dan waktu menekan mouse
-            buttonHoldTime = 0;
-            isTapping = false;
-        }
-
-
-        //jika player masih / sedang menekan mousenya
-        if (isTapping)
-        {
-            //jika player menahan mousenya
-            //maka kecepatan akan berkurang
-            if (buttonHoldTime >= buttonHoldMin) Brake();
-
-            buttonHoldTime += Time.deltaTime;
-        }
     }
 
     /// <summary>
@@ -117,6 +105,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Brake()
     {
-        currentSpeed = Mathf.Clamp(currentSpeed - (increasedSpeed * buttonHoldTime / 10), 0, speedThreshold);
+        currentSpeed = Mathf.Clamp(currentSpeed - (increasedSpeed * playerInput.buttonHoldTime / 10), 0, speedThreshold);
     }
 }
