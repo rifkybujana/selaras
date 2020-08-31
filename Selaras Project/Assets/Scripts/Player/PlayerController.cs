@@ -22,8 +22,6 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    //Kecepatan player saat ini
-    //atur ini untuk mengkontrol kecepatan player
     private float currentSpeed;
 
     #endregion
@@ -46,17 +44,13 @@ public class PlayerController : MonoBehaviour
 
 
     /// <summary>
-    /// Mendapatkan Input dari player
-    /// Simultaneous Tap = Tambah Kecepatan
-    /// Hold Mouse button = Rem
+    /// Mendapatkan Input dari player, dan mengendalikan player berdasarkan input
     /// </summary>
     private void GetInput()
     {
         //Jika player menekan mouse kiri
         if (Input.GetMouseButton(0))
         {
-            //jika player menekannya dalam waktu yang cukup lama maka rem
-            //waktu meneakan > waktu minimal untuk dikatakan sedang ditahan
             if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin) Brake();
 
             playerInput.buttonHoldTime += Time.deltaTime;
@@ -65,8 +59,6 @@ public class PlayerController : MonoBehaviour
         //jika player berhenti menekan mouse kiri
         if (Input.GetMouseButtonUp(0))
         {
-            //Jika player menekannya hanya sebentar maka tambah kecepatan
-            //waktu menekan < waktu minimal untuk dikatakan sedang ditahan
             if(playerInput.buttonHoldTime < playerInput.buttonHoldMin) AddSpeed();
 
             playerInput.buttonHoldTime = 0;
@@ -74,13 +66,11 @@ public class PlayerController : MonoBehaviour
     }
 
     /// <summary>
-    /// Mengatur kecepatan player, dan mengembalikan kecepatan kembali ke normal
-    /// jika tidak terjadi interaksi
+    /// Mengatur kecepatan player, dan mengembalikan kecepatan kembali ke normal jika tidak ada input
     /// </summary>
     private void SetVelocity()
     {
         //Mengembalikan kecepatan player ke normal / kecepatan default
-        //jika sedang tidak ada interaksi dan juga kecepatannya tidak sama dengan kecepatan normal
         if(currentSpeed != defaultSpeed && playerInput.buttonHoldTime == 0)
         {
             currentSpeed = currentSpeed < defaultSpeed ?
