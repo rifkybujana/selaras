@@ -17,6 +17,7 @@ public class ProceduralGenerator : MonoBehaviour
 
     //Vertices dan Tris dari mesh
     List<Vector3> vertices = new List<Vector3>();
+
     List<int> triangles = new List<int>();
 
     float xPos, yBefore;
@@ -30,7 +31,7 @@ public class ProceduralGenerator : MonoBehaviour
 
         xPos = 0; yBefore = 0;
 
-        for(int i = 0; i < 4; i++)
+        for(int i = 0; i < 5; i++)
         {
             //Buat mesh permulaan
             GeneratePoint();
@@ -43,7 +44,6 @@ public class ProceduralGenerator : MonoBehaviour
     /// </summary>
     private void GenerateMesh()
     {
-        // Same drawing code as before but now in a loop
         foreach (var curve in curves)
         {
             for (int i = 0; i < resolution; i++)
@@ -56,6 +56,9 @@ public class ProceduralGenerator : MonoBehaviour
 
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
+
+        LevelGenerator levelGen = transform.parent.GetComponent<LevelGenerator>();
+        levelGen.lastPoint += vertices[vertices.Count - 1] * transform.localScale.x;
 
         AddCollider();
     }
@@ -70,7 +73,7 @@ public class ProceduralGenerator : MonoBehaviour
 
         for (int i = 0; i < curve.Length; i++)
         {
-            //curve sebelumnya
+            //titik sebelumnya
             Vector3[] prev = null;
 
             //jika bukan di awal generasi set curva sebelumnya
@@ -79,34 +82,36 @@ public class ProceduralGenerator : MonoBehaviour
                 prev = curves[curves.Count - 1];
             }
 
-            if (prev != null && i == 0) //jika ini bukan quad pertama, dan ini adalah titik curva awal
+            if(prev != null)
             {
-                // buat kurva baru dan set posisi ke kurva sebelumnya agar nyambung
-                curve[i] = prev[curve.Length - 1];
-            }
-            else if (prev != null && i == 1) //jika ini bukan quad pertama, dan ini adalah titik kurva ke 2
-            {
-                // buat kurva akhir
-                curve[i] = 2 * prev[curve.Length - 1] - prev[curve.Length - 2];
-            }
-            else if (prev != null)
-            {
-                if (i % 2 != 0)
+                switch (i)
                 {
-                    curve[i] = new Vector3(xPos, yBefore, 0f);
-                    Instantiate(new GameObject(), curve[i], Quaternion.identity, transform);
+                    case 0:
+                        curve[i] = prev[curve.Length - 1];
+                        break;
+
+                    case 1:
+                        curve[i] = 2 * prev[curve.Length - 1] - prev[curve.Length - 2];
+                        break;
+
+                    default:
+                        if (i % 2 != 0)
+                        {
+                            curve[i] = new Vector3(xPos, yBefore, 0f);
+                        }
+                        else
+                        {
+                            float yPos = prev[curve.Length - 1].y - (Random.Range(0f, 1f) * transform.localScale.y);
+                            yBefore = yPos;
+
+                            curve[i] = new Vector3(xPos, yPos, 0f);
+                        }
+                        break;
                 }
-                else
-                {
-                    float yPos = prev[curve.Length - 1].y - (Random.Range(0f, 0.5f) * transform.localScale.y);
-                    yBefore = yPos;
-
-                    curve[i] = new Vector3(xPos, yPos, 0f);
-
-                    //Debug.Log(i + " " + yBefore);
-                }
-
-                //Debug.Log(curve[i]);
+            }
+            else
+            {
+                curve[i] = new Vector3(xPos, 0, 0);
             }
 
             xPos += 0.5f * transform.localScale.x;
@@ -131,11 +136,6 @@ public class ProceduralGenerator : MonoBehaviour
         }
 
         col.points = p.ToArray();
-
-        col.isTrigger = true;
-        col.usedByEffector = true;
-
-        BuoyancyEffector2D buoyancy = gameObject.AddComponent<BuoyancyEffector2D>();
     }
 
     private void AddTerrainPoint(Vector3 point)
