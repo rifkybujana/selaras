@@ -7,10 +7,10 @@ public class ProceduralGenerator : MonoBehaviour
     [Tooltip("Seberapa mulus kurvanya")]
     [SerializeField] private int resolution = 20;
 
-    [Tooltip("Player Layer Mask")]
-    [SerializeField] private LayerMask playerLayerMask;
 
     Mesh mesh;
+
+    bool isPlaced = false;
 
     //List of curve
     List<Vector3[]> curves = new List<Vector3[]>();
@@ -39,11 +39,21 @@ public class ProceduralGenerator : MonoBehaviour
         GenerateMesh();
     }
 
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if(collision.gameObject.CompareTag("Player") && !isPlaced)
+        {
+            transform.parent.GetComponent<LevelGenerator>().PlaceObject();
+            isPlaced = true;
+        }
+    }
+
     /// <summary>
     /// Membuat Mesh Berdasarkan Point
     /// </summary>
     private void GenerateMesh()
     {
+        //hubungkan setiap titik kurva menggunakan bezier curve
         foreach (var curve in curves)
         {
             for (int i = 0; i < resolution; i++)
@@ -54,9 +64,11 @@ public class ProceduralGenerator : MonoBehaviour
             }
         }
 
+        //membuat mesh
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
 
+        //set titik terakhir dari level generator menjadi vertices terakhir Procedural Generator ini
         LevelGenerator levelGen = transform.parent.GetComponent<LevelGenerator>();
         levelGen.lastPoint += vertices[vertices.Count - 1] * transform.localScale.x;
 
@@ -82,25 +94,32 @@ public class ProceduralGenerator : MonoBehaviour
                 prev = curves[curves.Count - 1];
             }
 
+            //jika ada kurva sebelumnya
             if(prev != null)
             {
                 switch (i)
                 {
                     case 0:
+                        //memposisikan titik pertama sama dengan titik terakhir kurva sebelumnya
                         curve[i] = prev[curve.Length - 1];
                         break;
 
                     case 1:
+                        //membuat kurva kedua menyesuaikan kruva pertama dan sebelumnya
                         curve[i] = 2 * prev[curve.Length - 1] - prev[curve.Length - 2];
                         break;
 
                     default:
+                        //jika angka ganjil
                         if (i % 2 != 0)
                         {
+                            //posisikan tinggi titik ini sama seperti titik sebelumnya
                             curve[i] = new Vector3(xPos, yBefore, 0f);
                         }
+                        //jika angka genap
                         else
                         {
+                            //membuat jalur turun atau naik secara random
                             float yPos = prev[curve.Length - 1].y - (Random.Range(0f, 1f) * transform.localScale.y);
                             yBefore = yPos;
 
@@ -111,9 +130,11 @@ public class ProceduralGenerator : MonoBehaviour
             }
             else
             {
+                //untuk kurva pertama, buat mendatar
                 curve[i] = new Vector3(xPos, 0, 0);
             }
 
+            //posisi setiap titik menambah setengah
             xPos += 0.5f * transform.localScale.x;
         }
 
@@ -122,12 +143,14 @@ public class ProceduralGenerator : MonoBehaviour
 
 
     /// <summary>
-    /// Membuat Colli
+    /// Membuat Collider
     /// </summary>
     private void AddCollider()
     {
+        //menambahkan komponen edge collider ke gameObject
         EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
 
+        //mengambil semua titik vektor dari array vertices
         List<Vector2> p = new List<Vector2>();
 
         for(int i = 1; i < vertices.Count; i += 2)
@@ -135,6 +158,7 @@ public class ProceduralGenerator : MonoBehaviour
             p.Add(new Vector2(vertices[i].x, vertices[i].y));
         }
 
+        //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
         col.points = p.ToArray();
     }
 

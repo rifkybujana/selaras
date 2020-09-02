@@ -17,24 +17,19 @@ public class LevelGenerator : MonoBehaviour
     void Start()
     {
         lastPoint = Vector3.zero;
-        InvokeRepeating("PlaceObject", 0.5f, 1);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        PlaceObject();
     }
 
     /// <summary>
     /// Menempatkan Object Baru / memperpanjang level
     /// </summary>
-    private void PlaceObject()
+    public void PlaceObject()
     {
         //Menempatkan object berdasarkan titik terakhir object terakhir
         MeshObjects.Add(Instantiate(MeshObject, lastPoint, Quaternion.identity, transform));
 
-        if(MeshObjects.Count > 2)
+        //hilangkan object ketiga dari belakang
+        if(MeshObjects.Count > 3)
         {
             Destroy(MeshObjects[0].gameObject);
             MeshObjects.RemoveAt(0);
