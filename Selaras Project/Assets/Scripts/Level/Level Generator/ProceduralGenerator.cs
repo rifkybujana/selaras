@@ -10,7 +10,17 @@ public class ProceduralGenerator : MonoBehaviour
 
     Mesh mesh;
 
+    //apakah object ini sudah menggenerasikan object baru
     bool isPlaced = false;
+
+    //Jenis Procedural Mesh
+    public enum MeshType
+    {
+        Flat,
+        StreamDown
+    }
+
+    [HideInInspector] public MeshType meshType = MeshType.StreamDown;
 
     //List of curve
     List<Vector3[]> curves = new List<Vector3[]>();
@@ -31,16 +41,27 @@ public class ProceduralGenerator : MonoBehaviour
 
         xPos = 0; yBefore = 0;
 
+        int RandomizeType = Random.Range(1, 5);
+        if (transform.parent.GetComponent<LevelGenerator>().MeshObjects.Count > 2 && RandomizeType > 3)
+        {
+            meshType = MeshType.Flat;
+        }
+        else
+        {
+            meshType = MeshType.StreamDown;
+        }
+
         for(int i = 0; i < 5; i++)
         {
-            //Buat mesh permulaan
             GeneratePoint();
         }
+
         GenerateMesh();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        //jika menyentuh player, buat generasi baru
         if(collision.gameObject.CompareTag("Player") && !isPlaced)
         {
             transform.parent.GetComponent<LevelGenerator>().PlaceObject();
@@ -94,44 +115,60 @@ public class ProceduralGenerator : MonoBehaviour
                 prev = curves[curves.Count - 1];
             }
 
-            //jika ada kurva sebelumnya
-            if(prev != null)
+            switch (meshType)
             {
-                switch (i)
-                {
-                    case 0:
-                        //memposisikan titik pertama sama dengan titik terakhir kurva sebelumnya
-                        curve[i] = prev[curve.Length - 1];
-                        break;
+                //jika tipe meshnya flat
+                case MeshType.Flat:
 
-                    case 1:
-                        //membuat kurva kedua menyesuaikan kruva pertama dan sebelumnya
-                        curve[i] = 2 * prev[curve.Length - 1] - prev[curve.Length - 2];
-                        break;
+                    //untuk kurva pertama, buat mendatar
+                    curve[i] = new Vector3(xPos, -0.5f, 0);
 
-                    default:
-                        //jika angka ganjil
-                        if (i % 2 != 0)
+                    break;
+
+                //jika tipe meshnya menurun kebawah
+                case MeshType.StreamDown:
+
+                    //jika ada kurva sebelumnya
+                    if (prev != null)
+                    {
+                        switch (i)
                         {
-                            //posisikan tinggi titik ini sama seperti titik sebelumnya
-                            curve[i] = new Vector3(xPos, yBefore, 0f);
-                        }
-                        //jika angka genap
-                        else
-                        {
-                            //membuat jalur turun atau naik secara random
-                            float yPos = prev[curve.Length - 1].y - (Random.Range(0f, 1f) * transform.localScale.y);
-                            yBefore = yPos;
+                            case 0:
+                                //memposisikan titik pertama sama dengan titik terakhir kurva sebelumnya
+                                curve[i] = prev[curve.Length - 1];
+                                break;
 
-                            curve[i] = new Vector3(xPos, yPos, 0f);
+                            case 1:
+                                //membuat kurva kedua menyesuaikan kruva pertama dan sebelumnya
+                                curve[i] = 2 * prev[curve.Length - 1] - prev[curve.Length - 2];
+                                break;
+
+                            default:
+                                //jika angka ganjil
+                                if (i % 2 != 0)
+                                {
+                                    //posisikan tinggi titik ini sama seperti titik sebelumnya
+                                    curve[i] = new Vector3(xPos, yBefore, 0f);
+                                }
+                                //jika angka genap
+                                else
+                                {
+                                    //membuat jalur turun atau naik secara random
+                                    float yPos = prev[curve.Length - 1].y - (Random.Range(0f, 1f) * transform.localScale.y);
+                                    yBefore = yPos;
+
+                                    curve[i] = new Vector3(xPos, yPos, 0f);
+                                }
+                                break;
                         }
-                        break;
-                }
-            }
-            else
-            {
-                //untuk kurva pertama, buat mendatar
-                curve[i] = new Vector3(xPos, 0, 0);
+                    }
+                    else
+                    {
+                        //untuk kurva pertama, buat mendatar
+                        curve[i] = new Vector3(xPos, 0, 0);
+                    }
+
+                    break;
             }
 
             //posisi setiap titik menambah setengah
@@ -150,13 +187,15 @@ public class ProceduralGenerator : MonoBehaviour
         //menambahkan komponen edge collider ke gameObject
         EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
 
-        //mengambil semua titik vektor dari array vertices
+        //mengambil semua titik vektor bagian atas dari array vertices
         List<Vector2> p = new List<Vector2>();
 
         for(int i = 1; i < vertices.Count; i += 2)
         {
-            p.Add(new Vector2(vertices[i].x, vertices[i].y));
+            p.Add(vertices[i]);
         }
+
+        p.Add(vertices[vertices.Count - 2]);
 
         //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
         col.points = p.ToArray();
