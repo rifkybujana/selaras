@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void AddSpeed()
     {
-        currentSpeed = Mathf.Clamp(currentSpeed + increasedSpeed, defaultSpeed, speedThreshold);
+        currentSpeed = Mathf.Clamp(currentSpeed + increasedSpeed, defaultSpeed - 3, speedThreshold);
     }
 
     /// <summary>
@@ -95,6 +95,6 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void Brake()
     {
-        currentSpeed = Mathf.Clamp(currentSpeed - (increasedSpeed * playerInput.buttonHoldTime / 10), 0, speedThreshold);
+        currentSpeed = Mathf.Clamp(currentSpeed - (increasedSpeed * playerInput.buttonHoldTime / 10), defaultSpeed - 3, speedThreshold);
     }
 }

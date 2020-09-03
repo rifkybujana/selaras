@@ -9,6 +9,7 @@ public class ProceduralGenerator : MonoBehaviour
 
 
     Mesh mesh;
+    LevelGenerator levelGenerator;
 
     //apakah object ini sudah menggenerasikan object baru
     bool isPlaced = false;
@@ -35,14 +36,23 @@ public class ProceduralGenerator : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        //mendapatkan level generator komponen dari parent
+        levelGenerator = transform.parent.GetComponent<LevelGenerator>();
+
+        //setup mesh filter
         var filter = GetComponent<MeshFilter>();
         mesh = filter.mesh;
         mesh.Clear();
 
+        //reset x dan y position untuk vertices
         xPos = 0; yBefore = 0;
 
+        //merandomize tipe mesh
         int RandomizeType = Random.Range(1, 5);
-        if (transform.parent.GetComponent<LevelGenerator>().MeshObjects.Count > 2 && RandomizeType > 3)
+
+        if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat && 
+            levelGenerator.MeshObjects.Count > 2 && 
+            RandomizeType < 3)
         {
             meshType = MeshType.Flat;
         }
@@ -51,6 +61,7 @@ public class ProceduralGenerator : MonoBehaviour
             meshType = MeshType.StreamDown;
         }
 
+        //generasi mesh
         for(int i = 0; i < 5; i++)
         {
             GeneratePoint();
@@ -64,7 +75,7 @@ public class ProceduralGenerator : MonoBehaviour
         //jika menyentuh player, buat generasi baru
         if(collision.gameObject.CompareTag("Player") && !isPlaced)
         {
-            transform.parent.GetComponent<LevelGenerator>().PlaceObject();
+            levelGenerator.PlaceObject();
             isPlaced = true;
         }
     }
@@ -90,8 +101,7 @@ public class ProceduralGenerator : MonoBehaviour
         mesh.triangles = triangles.ToArray();
 
         //set titik terakhir dari level generator menjadi vertices terakhir Procedural Generator ini
-        LevelGenerator levelGen = transform.parent.GetComponent<LevelGenerator>();
-        levelGen.lastPoint += vertices[vertices.Count - 1] * transform.localScale.x;
+        levelGenerator.lastPoint += vertices[vertices.Count - 1] * transform.localScale.x;
 
         AddCollider();
     }
