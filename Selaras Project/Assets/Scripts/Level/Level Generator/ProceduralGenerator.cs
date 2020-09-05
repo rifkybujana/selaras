@@ -48,13 +48,20 @@ public class ProceduralGenerator : MonoBehaviour
         xPos = 0; yBefore = 0;
 
         //merandomize tipe mesh
-        int RandomizeType = Random.Range(1, 5);
+        int RandomizeType = Random.Range(1, 3);
 
-        if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat && 
-            levelGenerator.MeshObjects.Count > 2 && 
-            RandomizeType < 3)
+        Debug.Log(RandomizeType);
+
+        if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2)
         {
-            meshType = MeshType.Flat;
+            if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat)
+            {
+                meshType = MeshType.Flat;
+            }
+            else
+            {
+                meshType = MeshType.StreamDown;
+            }
         }
         else
         {
@@ -131,7 +138,7 @@ public class ProceduralGenerator : MonoBehaviour
                 case MeshType.Flat:
 
                     //untuk kurva pertama, buat mendatar
-                    curve[i] = new Vector3(xPos, -0.5f, 0);
+                    curve[i] = new Vector3(xPos, -0.4f, 0);
 
                     break;
 
