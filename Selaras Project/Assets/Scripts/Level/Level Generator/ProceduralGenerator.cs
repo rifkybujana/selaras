@@ -50,8 +50,6 @@ public class ProceduralGenerator : MonoBehaviour
         //merandomize tipe mesh
         int RandomizeType = Random.Range(1, 3);
 
-        Debug.Log(RandomizeType);
-
         if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2)
         {
             if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat)

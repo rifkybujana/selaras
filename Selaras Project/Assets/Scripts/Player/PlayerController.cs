@@ -1,26 +1,24 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using Unity.Mathematics;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
     [SerializeField] private PlayerInput playerInput = new PlayerInput();
 
     [Space(10)] [Header("Player Movement and Controll")]
-    
-    [Tooltip("Kecepatan dasar dari player jika tidak dilakukan interaksi apapun oleh player")]
-    [Range(1, 10)] [SerializeField] private float defaultSpeed = 3;
 
     [Tooltip("Kecepatan perubahan dari kecepatan player")]
-    [Range(1, 10)] [SerializeField] private float accelleration;
+    [Range(1, 20)] [SerializeField] private float accelleration = 10;
 
     [Tooltip("Batas Kecepatan Player")]
-    [Range(5, 100)] [SerializeField] private float maxSpeed = 20;
+    [Range(5, 100)] [SerializeField] private float maxSpeed = 30;
 
     #region Private Variable
 
     private Rigidbody2D rb;
+
+    private float speed;
+
+    [HideInInspector] public float flow;
 
     #endregion
 
@@ -28,6 +26,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        flow = 0;
     }
 
     // Update is called once per frame
@@ -36,6 +36,18 @@ public class PlayerController : MonoBehaviour
         GetInput();
     }
 
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        ProceduralGenerator pg = collision.gameObject.GetComponent<ProceduralGenerator>();
+
+        if (pg == null) return;
+
+        if (pg.meshType == ProceduralGenerator.MeshType.StreamDown)
+        {
+            flow = 10;
+        }
+    }
 
     /// <summary>
     /// Mendapatkan Input dari player, dan mengendalikan player berdasarkan input
@@ -47,9 +59,7 @@ public class PlayerController : MonoBehaviour
         {
             if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
             {
-                float s = Mathf.Clamp(rb.velocity.x - (2 * accelleration * Time.deltaTime), 0, maxSpeed);
-
-                rb.velocity = new Vector2(s, rb.velocity.y);
+                speed = Mathf.Clamp(brake(3), flow, maxSpeed);
             }
 
             playerInput.buttonHoldTime += Time.deltaTime;
@@ -60,12 +70,22 @@ public class PlayerController : MonoBehaviour
         {
             if(playerInput.buttonHoldTime < playerInput.buttonHoldMin)
             {
-                float s = Mathf.Clamp(rb.velocity.x + (accelleration * Time.deltaTime), 0, maxSpeed);
-
-                rb.velocity = new Vector2(s, rb.velocity.y);
+                speed = Mathf.Clamp(accel(2), flow, maxSpeed);
             }
 
             playerInput.buttonHoldTime = 0;
         }
+
+        rb.velocity = new Vector2(Mathf.Clamp(speed, flow, maxSpeed), rb.velocity.y);
+    }
+
+    private float accel(float a = 1)
+    {
+        return rb.velocity.x + (a * accelleration * Time.deltaTime);
+    }
+
+    private float brake(float a = 1)
+    {
+        return rb.velocity.x - (a * accelleration * Time.deltaTime);
     }
 }
