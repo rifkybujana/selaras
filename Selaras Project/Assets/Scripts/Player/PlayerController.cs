@@ -59,7 +59,7 @@ public class PlayerController : MonoBehaviour
         {
             if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(brake(3), flow, maxSpeed);
+                speed = Mathf.Clamp(brake(3), flow, maxSpeed + flow);
             }
 
             playerInput.buttonHoldTime += Time.deltaTime;
@@ -70,7 +70,7 @@ public class PlayerController : MonoBehaviour
         {
             if(playerInput.buttonHoldTime < playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(accel(2), flow, maxSpeed);
+                speed = Mathf.Clamp(accel(2), flow, maxSpeed + flow);
             }
 
             playerInput.buttonHoldTime = 0;

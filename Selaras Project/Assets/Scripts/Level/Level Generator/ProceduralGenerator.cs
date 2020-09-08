@@ -7,6 +7,12 @@ public class ProceduralGenerator : MonoBehaviour
     [Tooltip("Seberapa mulus kurvanya")]
     [SerializeField] private int resolution = 20;
 
+    [Space(10)]
+    [Header("Obstacle")]
+    public GameObject WaterFall;
+
+
+    #region private/hidden variable
 
     Mesh mesh;
     LevelGenerator levelGenerator;
@@ -33,6 +39,9 @@ public class ProceduralGenerator : MonoBehaviour
 
     float xPos, yBefore;
 
+    #endregion
+
+
     // Start is called before the first frame update
     void Start()
     {
@@ -44,14 +53,16 @@ public class ProceduralGenerator : MonoBehaviour
         mesh = filter.mesh;
         mesh.Clear();
 
-        //reset x dan y position untuk vertices
+        //reset x dan y position dari vertices
         xPos = 0; yBefore = 0;
 
         //merandomize tipe mesh
         int RandomizeType = Random.Range(1, 3);
 
+        //jika bukan di awal generasi dan hasil dari random itu = 2
         if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2)
         {
+            //jika mesh sebelumnya tipenya bukan flat
             if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat)
             {
                 meshType = MeshType.Flat;
@@ -66,13 +77,15 @@ public class ProceduralGenerator : MonoBehaviour
             meshType = MeshType.StreamDown;
         }
 
-        //generasi mesh
+        //Buat Mesh
         for(int i = 0; i < 5; i++)
         {
             GeneratePoint();
         }
 
         GenerateMesh();
+
+        GenerateObstacle();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -82,6 +95,23 @@ public class ProceduralGenerator : MonoBehaviour
         {
             levelGenerator.PlaceObject();
             isPlaced = true;
+        }
+    }
+
+    private void GenerateObstacle()
+    {
+        List<Vector2> v = GetTopVertices();
+
+        if(meshType == MeshType.Flat)
+        {
+            int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
+
+            WaterFall = Instantiate(WaterFall, Vector3.zero, Quaternion.identity, transform);
+
+            WaterFall.transform.localPosition = v[random];
+            WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+
+            Debug.Log(v[random]);
         }
     }
 
@@ -203,19 +233,18 @@ public class ProceduralGenerator : MonoBehaviour
         EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
 
         //mengambil semua titik vektor bagian atas dari array vertices
-        List<Vector2> p = new List<Vector2>();
-
-        for(int i = 1; i < vertices.Count; i += 2)
-        {
-            p.Add(vertices[i]);
-        }
-
-        p.Add(vertices[vertices.Count - 2]);
+        List<Vector2> v = GetTopVertices();
+        v.Add(vertices[vertices.Count - 2]);
 
         //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
-        col.points = p.ToArray();
+        col.points = v.ToArray();
     }
 
+    /// <summary>
+    /// Menetapkan titik titik vertices atas dan bawah
+    /// Dan membuat segitiga mesh
+    /// </summary>
+    /// <param name="point">Titik atau point vertices</param>
     private void AddTerrainPoint(Vector3 point)
     {
         //Membuat bottom vertices yang sejajar dengan top vertices
@@ -251,6 +280,23 @@ public class ProceduralGenerator : MonoBehaviour
         p += 3 * uu * t * p1;
         p += 3 * u * tt * p2;
         p += ttt * p3;
+
+        return p;
+    }
+
+    /// <summary>
+    /// Mendapatkan Hanya Posisi Top Vertices Saja
+    /// </summary>
+    /// <returns></returns>
+    List<Vector2> GetTopVertices()
+    {
+        //mengambil semua titik vektor bagian atas dari array vertices
+        List<Vector2> p = new List<Vector2>();
+
+        for (int i = 1; i < vertices.Count; i += 2)
+        {
+            p.Add(vertices[i]);
+        }
 
         return p;
     }
