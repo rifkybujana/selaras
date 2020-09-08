@@ -12,13 +12,27 @@ public class PlayerController : MonoBehaviour
     [Tooltip("Batas Kecepatan Player")]
     [Range(5, 100)] [SerializeField] private float maxSpeed = 30;
 
+    [Space(5)]
+    [Header("Ground Check")]
+    [SerializeField] private LayerMask GroundLayerMask;
+
+    [SerializeField] private Vector2 GroundCheckScale = new Vector2(1, 1);
+    [SerializeField] private Vector2 GroundCheckPos = new Vector2(0, 0);
+
+
     #region Private Variable
 
     private Rigidbody2D rb;
 
     private float speed;
 
-    [HideInInspector] public float flow;
+    public float flow;
+
+    [HideInInspector]
+    public bool isGrounded()
+    {
+        return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask);
+    }
 
     #endregion
 
@@ -34,8 +48,16 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
         GetInput();
+
+        if (isGrounded()) Debug.Log("Grounded");
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+
+        Gizmos.DrawWireCube(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale);
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
@@ -45,7 +67,7 @@ public class PlayerController : MonoBehaviour
 
         if (pg.meshType == ProceduralGenerator.MeshType.StreamDown)
         {
-            flow = 10;
+            flow = 5;
         }
     }
 
@@ -59,7 +81,7 @@ public class PlayerController : MonoBehaviour
         {
             if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(brake(3), flow, maxSpeed + flow);
+                speed = Mathf.Clamp(brake(3), flow, maxSpeed + (flow * 2));
             }
 
             playerInput.buttonHoldTime += Time.deltaTime;
@@ -70,13 +92,13 @@ public class PlayerController : MonoBehaviour
         {
             if(playerInput.buttonHoldTime < playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(accel(2), flow, maxSpeed + flow);
+                speed = Mathf.Clamp(accel(2), flow, maxSpeed + (flow * 2));
             }
 
             playerInput.buttonHoldTime = 0;
         }
 
-        rb.velocity = new Vector2(Mathf.Clamp(speed, flow, maxSpeed), rb.velocity.y);
+        rb.velocity = new Vector2(Mathf.Clamp(speed, flow, maxSpeed + (flow * 2)), rb.velocity.y);
     }
 
     private float accel(float a = 1)

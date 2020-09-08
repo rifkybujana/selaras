@@ -110,8 +110,6 @@ public class ProceduralGenerator : MonoBehaviour
 
             WaterFall.transform.localPosition = v[random];
             WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-
-            Debug.Log(v[random]);
         }
     }
 
