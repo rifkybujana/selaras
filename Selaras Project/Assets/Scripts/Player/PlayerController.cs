@@ -7,7 +7,7 @@ public class PlayerController : MonoBehaviour
     [Space(10)] [Header("Player Movement and Controll")]
 
     [Tooltip("Kecepatan perubahan dari kecepatan player")]
-    [Range(1, 20)] [SerializeField] private float accelleration = 10;
+    [Range(1, 20)] public float accelleration = 10;
 
     [Tooltip("Batas Kecepatan Player")]
     [Range(5, 100)] [SerializeField] private float maxSpeed = 30;
@@ -26,8 +26,6 @@ public class PlayerController : MonoBehaviour
 
     private float speed;
 
-    public float flow;
-
     [HideInInspector]
     public bool isGrounded()
     {
@@ -40,16 +38,12 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-
-        flow = 0;
     }
 
     // Update is called once per frame
     void Update()
     {
         GetInput();
-
-        if (isGrounded()) Debug.Log("Grounded");
     }
 
     private void OnDrawGizmos()
@@ -57,18 +51,6 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireCube(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale);
-    }
-
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        ProceduralGenerator pg = collision.gameObject.GetComponent<ProceduralGenerator>();
-
-        if (pg == null) return;
-
-        if (pg.meshType == ProceduralGenerator.MeshType.StreamDown)
-        {
-            flow = 5;
-        }
     }
 
     /// <summary>
@@ -81,10 +63,12 @@ public class PlayerController : MonoBehaviour
         {
             if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(brake(3), flow, maxSpeed + (flow * 2));
+                speed = Mathf.Clamp(brake(), 0, maxSpeed);
             }
 
             playerInput.buttonHoldTime += Time.deltaTime;
+
+            playerInput.inputTimer = 0;
         }
 
         //jika player berhenti menekan mouse kiri
@@ -92,13 +76,26 @@ public class PlayerController : MonoBehaviour
         {
             if(playerInput.buttonHoldTime < playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(accel(2), flow, maxSpeed + (flow * 2));
+                speed = Mathf.Clamp(accel(),0, maxSpeed);
             }
 
             playerInput.buttonHoldTime = 0;
+
+            playerInput.inputTimer = 0;
         }
 
-        rb.velocity = new Vector2(Mathf.Clamp(speed, flow, maxSpeed + (flow * 2)), rb.velocity.y);
+        if(playerInput.inputTimer < playerInput.MaxInputTime)
+        {
+            rb.velocity = new Vector2(Mathf.Clamp(speed, 0, maxSpeed), rb.velocity.y);
+        }
+        else
+        {
+            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x - Time.deltaTime, 0, maxSpeed), rb.velocity.y);
+
+            speed = rb.velocity.x;
+        }
+
+        playerInput.inputTimer += Time.deltaTime;
     }
 
     private float accel(float a = 1)
@@ -106,8 +103,8 @@ public class PlayerController : MonoBehaviour
         return rb.velocity.x + (a * accelleration * Time.deltaTime);
     }
 
-    private float brake(float a = 1)
+    private float brake(float a = 5)
     {
-        return rb.velocity.x - (a * accelleration * Time.deltaTime);
+        return rb.velocity.x - Time.deltaTime * a;
     }
 }
