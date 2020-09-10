@@ -26,6 +26,8 @@ public class PlayerController : MonoBehaviour
 
     private float speed;
 
+    [HideInInspector] public float flow;
+
     [HideInInspector]
     public bool isGrounded()
     {
@@ -38,6 +40,8 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        flow = 1;
     }
 
     // Update is called once per frame
@@ -100,7 +104,7 @@ public class PlayerController : MonoBehaviour
 
     private float accel(float a = 1)
     {
-        return rb.velocity.x + (a * accelleration * Time.deltaTime);
+        return (rb.velocity.x + (a * accelleration * Time.deltaTime)) * flow;
     }
 
     private float brake(float a = 5)
