@@ -98,6 +98,16 @@ public class ProceduralGenerator : MonoBehaviour
         }
     }
 
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        //jika menyentuh player, buat generasi baru
+        if (collision.gameObject.CompareTag("Player") && !isPlaced)
+        {
+            levelGenerator.PlaceObject();
+            isPlaced = true;
+        }
+    }
+
     private void GenerateObstacle()
     {
         List<Vector2> v = GetTopVertices();
@@ -227,15 +237,44 @@ public class ProceduralGenerator : MonoBehaviour
     /// </summary>
     private void AddCollider()
     {
-        //menambahkan komponen edge collider ke gameObject
-        EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
+        if(meshType == MeshType.StreamDown)
+        {
+            //menambahkan komponen edge collider ke gameObject
+            EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
+            BoxCollider2D bCol = gameObject.AddComponent<BoxCollider2D>();
 
-        //mengambil semua titik vektor bagian atas dari array vertices
-        List<Vector2> v = GetTopVertices();
-        v.Add(vertices[vertices.Count - 2]);
+            bCol.offset = new Vector2(2.25f, -1f);
+            bCol.size = new Vector2(4.5f, 2f);
 
-        //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
-        col.points = v.ToArray();
+            bCol.isTrigger = true;
+            bCol.usedByEffector = true;
+
+            BuoyancyEffector2D bEffector = gameObject.AddComponent<BuoyancyEffector2D>();
+
+            bEffector.flowMagnitude = 5;
+
+            //mengambil semua titik vektor bagian atas dari array vertices
+            List<Vector2> v = GetTopVertices(41);
+            v.Add(vertices[vertices.Count - 2]);
+
+            //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
+            col.points = v.ToArray();
+        }
+        else
+        {
+            EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
+
+            List<Vector2> v = GetTopVertices();
+            v.Add(vertices[vertices.Count - 2]);
+
+            col.points = v.ToArray();
+            col.isTrigger = true;
+            col.usedByEffector = true;
+
+            BuoyancyEffector2D bEffector = gameObject.AddComponent<BuoyancyEffector2D>();
+            bEffector.surfaceLevel = -0.4f;
+            bEffector.flowMagnitude = 5;
+        }
     }
 
     /// <summary>
@@ -286,14 +325,14 @@ public class ProceduralGenerator : MonoBehaviour
     /// Mendapatkan Hanya Posisi Top Vertices Saja
     /// </summary>
     /// <returns></returns>
-    List<Vector2> GetTopVertices()
+    List<Vector2> GetTopVertices(int s = 1)
     {
         //mengambil semua titik vektor bagian atas dari array vertices
         List<Vector2> p = new List<Vector2>();
 
-        for (int i = 1; i < vertices.Count; i += 2)
+        for (int i = s; i < vertices.Count; i += 2)
         {
-            p.Add(vertices[i]);
+            p.Add(new Vector2(vertices[i].x, vertices[i].y - 0.1f));
         }
 
         return p;
