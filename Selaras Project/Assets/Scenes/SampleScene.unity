@@ -505,7 +505,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 728194933}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -6.552972, y: 6.307998, z: -10}
+  m_LocalPosition: {x: -7.0064716, y: 6.0698256, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 453099115}
@@ -534,7 +534,7 @@ MonoBehaviour:
   m_Follow: {fileID: 1712772441}
   m_Lens:
     FieldOfView: 60
-    OrthographicSize: 7.8
+    OrthographicSize: 7.374692
     NearClipPlane: 0.3
     FarClipPlane: 1000
     Dutch: 0
@@ -844,7 +844,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.05
+  m_Mass: 0.04
   m_LinearDrag: 0.01
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -871,7 +871,7 @@ MonoBehaviour:
     MaxInputTime: 0.5
     buttonHoldTime: 0
     inputTimer: 0
-  accelleration: 20
+  accelleration: 15
   maxSpeed: 20
   GroundLayerMask:
     serializedVersion: 2

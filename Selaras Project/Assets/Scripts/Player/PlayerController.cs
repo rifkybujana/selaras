@@ -119,7 +119,7 @@ public class PlayerController : MonoBehaviour
         if(transform.rotation.eulerAngles.z > 90)
         {
             //Death();
-            Debug.Log(transform.rotation.eulerAngles.z);
+            //Debug.Log(transform.rotation.eulerAngles.z);
         }
     }
 
@@ -132,7 +132,7 @@ public class PlayerController : MonoBehaviour
 
     private void SetEffect()
     {
-        manager.vCamera.m_Lens.OrthographicSize = Map(rb.velocity.x, -maxSpeed, maxSpeed, 6.3f, 9.3f);
+        manager.vCamera.m_Lens.OrthographicSize = Map(rb.velocity.x, -maxSpeed, maxSpeed, 6.3f, 8.3f);
     }
 
 
