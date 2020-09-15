@@ -39,6 +39,8 @@ public class ProceduralGenerator : MonoBehaviour
 
     float xPos, yBefore;
 
+    float flatHeight;
+
     #endregion
 
 
@@ -62,14 +64,18 @@ public class ProceduralGenerator : MonoBehaviour
         //jika bukan di awal generasi dan hasil dari random itu = 2
         if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2)
         {
+            meshType = MeshType.Flat;
+
+            int RandomHeigh = Random.Range(1, 3);
+
             //jika mesh sebelumnya tipenya bukan flat
-            if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat)
+            if (RandomHeigh == 1)
             {
-                meshType = MeshType.Flat;
+                flatHeight = -0.4f;
             }
             else
             {
-                meshType = MeshType.StreamDown;
+                flatHeight = 0;
             }
         }
         else
@@ -174,7 +180,7 @@ public class ProceduralGenerator : MonoBehaviour
                 case MeshType.Flat:
 
                     //untuk kurva pertama, buat mendatar
-                    curve[i] = new Vector3(xPos, -0.4f, 0);
+                    curve[i] = new Vector3(xPos, flatHeight, 0);
 
                     break;
 

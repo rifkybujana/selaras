@@ -21,6 +21,8 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public DepthOfField depthOfField;
     [HideInInspector] public PaniniProjection paniniProjection;
 
+    [HideInInspector] public bool isDeath;
+
     private void Awake()
     {
         volume.sharedProfile.TryGet<Vignette>(out vignette);
@@ -28,11 +30,23 @@ public class GameManager : MonoBehaviour
         volume.sharedProfile.TryGet<PaniniProjection>(out paniniProjection);
 
         depthOfField.focusDistance.value = 0.5f;
+
+        isDeath = false;
     }
 
     // Update is called once per frame
     void Update()
     {
         
+    }
+
+    public void Respawn()
+    {
+
+    }
+
+    public void Play()
+    {
+
     }
 }

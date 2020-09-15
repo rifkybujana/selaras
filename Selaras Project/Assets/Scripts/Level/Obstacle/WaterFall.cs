@@ -19,16 +19,13 @@ public class WaterFall : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!Physics2D.OverlapCircle(transform.position, radius, playerLayer)) return;
-
-        GameObject player = Physics2D.OverlapCircle(transform.position, radius, playerLayer).gameObject;
-
-        if (player != null)
+        if (Physics2D.OverlapCircle(transform.position, radius, playerLayer)) 
         {
-            float jarak = player.transform.position.x - transform.position.x;
-            Debug.Log(jarak);
+            GameObject player = Physics2D.OverlapCircle(transform.position, radius, playerLayer).gameObject;
 
-            pGen.flowMagnitude = radius * 3;
+            float jarak = player.transform.position.x - transform.position.x;
+
+            pGen.flowMagnitude = radius;
             pGen.flowAngle = jarak < 0 ? 180 : 0;
         }
         else

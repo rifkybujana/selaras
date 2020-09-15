@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
     [Header("Ground Check")]
 
     [SerializeField] private LayerMask GroundLayerMask;
-    [SerializeField] private LayerMask FlowLayerMask;
 
     [SerializeField] private Vector2 GroundCheckScale = new Vector2(1, 1);
     [SerializeField] private Vector2 GroundCheckPos = new Vector2(0, 0);
@@ -52,23 +51,23 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
-        isDeath = false;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Update()
     {
-        
+        CheckDeath();
     }
 
     private void FixedUpdate()
     {
+        if (manager.isDeath) return;
+
         //Jika player menekan mouse kiri
         if (Input.GetMouseButton(0))
         {
             if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
             {
-                speed = Mathf.Clamp(brake(), 0, maxSpeed);
+                speed = Mathf.Clamp(brake(10), 0, maxSpeed);
             }
 
             playerInput.buttonHoldTime += Time.deltaTime;
@@ -89,9 +88,7 @@ public class PlayerController : MonoBehaviour
             playerInput.inputTimer = 0;
         }
 
-        bool isOnFlow = Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, FlowLayerMask);
-
-        if (playerInput.inputTimer < playerInput.MaxInputTime && !isOnFlow)
+        if (playerInput.inputTimer < playerInput.MaxInputTime)
         {
             rb.velocity = new Vector2(Mathf.Clamp(speed, -maxSpeed, maxSpeed), rb.velocity.y);
         }
@@ -114,11 +111,11 @@ public class PlayerController : MonoBehaviour
         SetEffect();
     }
 
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void CheckDeath()
     {
-        if(transform.rotation.eulerAngles.z > 90)
+        if(isGrounded() && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270)
         {
-            //Death();
+            Death();
             //Debug.Log(transform.rotation.eulerAngles.z);
         }
     }
@@ -138,7 +135,7 @@ public class PlayerController : MonoBehaviour
 
     public void Death()
     {
-        isDeath = true;
+        manager.isDeath = true;
 
         manager.depthOfField.focusDistance.value = 0;
     }
