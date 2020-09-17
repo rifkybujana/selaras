@@ -2,7 +2,7 @@
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private GameManager manager;
+    [SerializeField] private GameManager manager = null;
 
     [Space(10)]
 
@@ -15,12 +15,12 @@ public class PlayerController : MonoBehaviour
     [Range(1, 20)] public float accelleration = 10;
 
     [Tooltip("Batas Kecepatan Player")]
-    [Range(5, 100)] [SerializeField] private float maxSpeed = 30;
+    [Range(5, 100)] [SerializeField] private float speedThreshold = 30;
 
     [Space(5)]
     [Header("Ground Check")]
 
-    [SerializeField] private LayerMask GroundLayerMask;
+    [SerializeField] private LayerMask GroundLayerMask = new LayerMask();
 
     [SerializeField] private Vector2 GroundCheckScale = new Vector2(1, 1);
     [SerializeField] private Vector2 GroundCheckPos = new Vector2(0, 0);
@@ -43,7 +43,17 @@ public class PlayerController : MonoBehaviour
         return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask);
     }
 
-    private bool isDeath;
+    [HideInInspector]
+    public Transform GroundPos()
+    {
+        return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask).GetComponent<Transform>();
+    }
+
+    [HideInInspector]
+    public BuoyancyEffector2D GroundBuoyancy()
+    {
+        return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask).GetComponent<BuoyancyEffector2D>();
+    }
 
     #endregion
 
@@ -55,67 +65,87 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        CheckDeath();
-    }
-
-    private void FixedUpdate()
-    {
         if (manager.isDeath) return;
 
-        //Jika player menekan mouse kiri
-        if (Input.GetMouseButton(0))
+        CheckDeath();
+
+        if (isGrounded())
         {
-            if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
+            //Jika player menekan mouse kiri
+            if (Input.GetMouseButton(0))
             {
-                speed = Mathf.Clamp(brake(10), 0, maxSpeed);
+                if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
+                {
+                    speed = Mathf.Clamp(brake(10), 0, speed);
+                }
+
+                playerInput.buttonHoldTime += Time.deltaTime;
+
+                playerInput.inputTimer = 0;
             }
 
-            playerInput.buttonHoldTime += Time.deltaTime;
-
-            playerInput.inputTimer = 0;
-        }
-
-        //jika player berhenti menekan mouse kiri
-        if (Input.GetMouseButtonUp(0))
-        {
-            if (playerInput.buttonHoldTime < playerInput.buttonHoldMin)
+            //jika player berhenti menekan mouse kiri
+            if (Input.GetMouseButtonUp(0))
             {
-                speed = accel();
+                if (playerInput.buttonHoldTime < playerInput.buttonHoldMin)
+                {
+                    speed = accel();
+                }
+
+                playerInput.buttonHoldTime = 0;
+
+                playerInput.inputTimer = 0;
             }
 
-            playerInput.buttonHoldTime = 0;
-
-            playerInput.inputTimer = 0;
-        }
-
-        if (playerInput.inputTimer < playerInput.MaxInputTime)
-        {
-            rb.velocity = new Vector2(Mathf.Clamp(speed, -maxSpeed, maxSpeed), rb.velocity.y);
-        }
-        else
-        {
-            if (rb.velocity.x < 0)
+            if (playerInput.inputTimer < playerInput.MaxInputTime)
             {
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x + Time.deltaTime, -maxSpeed, 0), rb.velocity.y);
+                rb.velocity = new Vector2(speed, rb.velocity.y);
             }
-            else if (rb.velocity.x > 0)
+            else
             {
-                rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x - Time.deltaTime, 0, maxSpeed), rb.velocity.y);
+                if (rb.velocity.x < 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x + Time.deltaTime, rb.velocity.y);
+                }
+                else if (rb.velocity.x > 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x - Time.deltaTime, rb.velocity.y);
+                }
+
+                speed = rb.velocity.x;
             }
 
-            speed = rb.velocity.x;
+            playerInput.inputTimer += Time.deltaTime;
         }
+    }
 
-        playerInput.inputTimer += Time.deltaTime;
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("die");
 
-        SetEffect();
+        if (rb.velocity.y < -speedThreshold)
+        {
+            manager.isDeath = true;
+            Debug.Log("die");
+        }
+    }
+
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        Debug.Log("die");
+
+        if (rb.velocity.y < -speedThreshold)
+        {
+            manager.isDeath = true;
+            Debug.Log("die");
+        }
     }
 
     private void CheckDeath()
     {
-        if(isGrounded() && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270)
+        if ((isGrounded() && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270))
         {
-            Death();
+            manager.isDeath = true;
             //Debug.Log(transform.rotation.eulerAngles.z);
         }
     }
@@ -127,18 +157,6 @@ public class PlayerController : MonoBehaviour
         Gizmos.DrawWireCube(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale);
     }
 
-    private void SetEffect()
-    {
-        manager.vCamera.m_Lens.OrthographicSize = Map(rb.velocity.x, -maxSpeed, maxSpeed, 6.3f, 8.3f);
-    }
-
-
-    public void Death()
-    {
-        manager.isDeath = true;
-
-        manager.depthOfField.focusDistance.value = 0;
-    }
     
     private float accel(float a = 1)
     {
