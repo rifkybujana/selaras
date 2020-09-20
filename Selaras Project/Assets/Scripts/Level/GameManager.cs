@@ -4,21 +4,30 @@ using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using Cinemachine;
 using TMPro;
-using System.Collections;
-using System.Collections.Generic;
 
 public class GameManager : MonoBehaviour
 {
+<<<<<<< HEAD
     [System.Serializable]
     public class effect
     {
         public Volume volume = null;
+=======
+    [Header("PostProcessing Effect")]
 
-        [HideInInspector] public Vignette vignette;
-        [HideInInspector] public DepthOfField depthOfField;
-        [HideInInspector] public PaniniProjection paniniProjection;
-    }
+    [Tooltip("Post Processing Volume")]
+    [SerializeField] private Volume volume = null;
 
+    [Space(10)]
+    [Header("Cinemachine Camera")]
+    public CinemachineVirtualCamera vCamera;
+>>>>>>> parent of 94f23c4... UI
+
+    [Space(10)]
+    [Header("UI")]
+    public TMP_Text uDistance;
+
+<<<<<<< HEAD
     public enum UIPos
     {
         Play,
@@ -40,15 +49,26 @@ public class GameManager : MonoBehaviour
 
     public CinemachineVirtualCamera vCamera;
     public BuoyancyEffector2D baseWater;
+=======
+    public GameObject uPause;
+    public GameObject uDeath;
+
+>>>>>>> parent of 94f23c4... UI
 
 
     Dictionary<UIPos, GameObject> UI = new Dictionary<UIPos, GameObject>();
 
     //Post processing effect
-    [HideInInspector] public PlayerController player;
+    [HideInInspector] public Vignette vignette;
+    [HideInInspector] public DepthOfField depthOfField;
+    [HideInInspector] public PaniniProjection paniniProjection;
 
+<<<<<<< HEAD
     private UIPos lastUiPos;
     private UIPos uiPos = UIPos.Menu;
+=======
+    [HideInInspector] public PlayerController player;
+>>>>>>> parent of 94f23c4... UI
 
     [HideInInspector] public bool isDeath;
     [HideInInspector] public bool isStart;
@@ -66,19 +86,25 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
-        PostProcessingEffect.volume.sharedProfile.TryGet<Vignette>(out PostProcessingEffect.vignette);
-        PostProcessingEffect.volume.sharedProfile.TryGet<DepthOfField>(out PostProcessingEffect.depthOfField);
-        PostProcessingEffect.volume.sharedProfile.TryGet<PaniniProjection>(out PostProcessingEffect.paniniProjection);
+        volume.sharedProfile.TryGet<Vignette>(out vignette);
+        volume.sharedProfile.TryGet<DepthOfField>(out depthOfField);
+        volume.sharedProfile.TryGet<PaniniProjection>(out paniniProjection);
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
+<<<<<<< HEAD
         spawnPoint = player.transform.position.x;
         StartMagnitude = baseWater.flowMagnitude;
         baseWater.flowMagnitude = 0;
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
+=======
+        depthOfField.focusDistance.value = 0.5f;
+>>>>>>> parent of 94f23c4... UI
         Time.timeScale = 1;
+        spawnPoint = player.transform.position.x;
 
         isDeath = false;
+<<<<<<< HEAD
         isStart = false;
         lastUiPos = uiPos;
 
@@ -95,11 +121,14 @@ public class GameManager : MonoBehaviour
         UI.Add(UIPos.Menu, menuUI);
         UI.Add(UIPos.Pause, pauseUI);
         UI.Add(UIPos.Play, playUI);
+=======
+>>>>>>> parent of 94f23c4... UI
     }
 
     // Update is called once per frame
     void Update()
     {
+<<<<<<< HEAD
         /*if(uiPos != lastUiPos)
         {
             ChangeUI();
@@ -142,10 +171,25 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0.5f;
 
         uiPos = UIPos.Death;
+=======
+        uDistance.text = distance().ToString();
+
+        if (isDeath)
+        {
+            depthOfField.focusDistance.value = 0.1f;
+            //Time.timeScale = 0;
+        }
+    }
+
+    public void Respawn()
+    {
+
+>>>>>>> parent of 94f23c4... UI
     }
     
     public void Home()
     {
+<<<<<<< HEAD
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
 
@@ -155,5 +199,8 @@ public class GameManager : MonoBehaviour
         UI[uiPos].SetActive(true);
 
         lastUiPos = uiPos;
+=======
+
+>>>>>>> parent of 94f23c4... UI
     }
 }
