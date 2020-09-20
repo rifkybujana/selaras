@@ -34,6 +34,52 @@ public class GameManager : MonoBehaviour
     }
 
     [System.Serializable]
+    public class PlayUI
+    {
+        public GameObject UI;
+        public TMP_Text distance;
+    }
+
+    [System.Serializable]
+    public class PauseUI
+    {
+        public GameObject UI;
+    }
+
+    [System.Serializable]
+    public class DeathUI
+    {
+        public GameObject UI;
+
+        public TMP_Text pictureTaken;
+        public TMP_Text coinTaken;
+        public TMP_Text totalPoint;
+    }
+
+    [System.Serializable]
+    public class PlayUI
+    {
+        public GameObject UI;
+        public TMP_Text distance;
+    }
+
+    [System.Serializable]
+    public class PauseUI
+    {
+        public GameObject UI;
+    }
+
+    [System.Serializable]
+    public class DeathUI
+    {
+        public GameObject UI;
+
+        public TMP_Text pictureTaken;
+        public TMP_Text coinTaken;
+        public TMP_Text totalPoint;
+    }
+
+    [System.Serializable]
     public class effect
     {
         public Volume volume = null;
@@ -81,6 +127,8 @@ public class GameManager : MonoBehaviour
 
     public CinemachineVirtualCamera vCamera;
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
     public BuoyancyEffector2D baseWater;
 =======
     public GameObject uPause;
@@ -93,11 +141,14 @@ public class GameManager : MonoBehaviour
     public GameObject uDeath;
 =======
 >>>>>>> parent of 4c7e4ec... FUCK
+=======
+>>>>>>> parent of 4c7e4ec... FUCK
 
 >>>>>>> parent of 94f23c4... UI
 =======
     [Header("PostProcessing Effect")]
 
+<<<<<<< HEAD
     [Tooltip("Post Processing Volume")]
     [SerializeField] private Volume volume = null;
 
@@ -108,12 +159,19 @@ public class GameManager : MonoBehaviour
     [Space(10)]
     [Header("UI")]
     public TMP_Text uDistance;
+=======
+>>>>>>> parent of 4c7e4ec... FUCK
 
     public GameObject uPause;
     public GameObject uDeath;
 
+<<<<<<< HEAD
 >>>>>>> parent of 94f23c4... UI
 
+=======
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+>>>>>>> parent of 4c7e4ec... FUCK
     //Post processing effect
     [HideInInspector] public Vignette vignette;
     [HideInInspector] public DepthOfField depthOfField;
@@ -123,6 +181,8 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
     private UIPos lastUiPos;
+<<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD
     private UIPos uiPos = UIPos.Menu;
 =======
@@ -134,6 +194,12 @@ public class GameManager : MonoBehaviour
 =======
     [HideInInspector] public PlayerController player;
 >>>>>>> parent of 94f23c4... UI
+=======
+    [HideInInspector] public UIPos uiPos = UIPos.Play;
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+    [HideInInspector] public UIPos uiPos = UIPos.Play;
+>>>>>>> parent of 4c7e4ec... FUCK
 =======
     [HideInInspector] public UIPos uiPos = UIPos.Play;
 >>>>>>> parent of 4c7e4ec... FUCK
@@ -158,6 +224,8 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         spawnPoint = player.transform.position.x;
         StartMagnitude = baseWater.flowMagnitude;
         baseWater.flowMagnitude = 0;
@@ -175,10 +243,20 @@ public class GameManager : MonoBehaviour
         PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
         spawnPoint = player.transform.position.x;
 >>>>>>> parent of 4c7e4ec... FUCK
+=======
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+        spawnPoint = player.transform.position.x;
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+        spawnPoint = player.transform.position.x;
+>>>>>>> parent of 4c7e4ec... FUCK
         Time.timeScale = 1;
         spawnPoint = player.transform.position.x;
 
         isDeath = false;
+<<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -209,6 +287,14 @@ public class GameManager : MonoBehaviour
 
         lastUiPos = uiPos;
 >>>>>>> parent of 4c7e4ec... FUCK
+=======
+
+        lastUiPos = uiPos;
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+
+        lastUiPos = uiPos;
+>>>>>>> parent of 4c7e4ec... FUCK
     }
 
     // Update is called once per frame
@@ -218,7 +304,15 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+<<<<<<< HEAD
         /*if(uiPos != lastUiPos)
+=======
+        if (isDeath)
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+        if (isDeath)
+>>>>>>> parent of 4c7e4ec... FUCK
 =======
         if (isDeath)
 >>>>>>> parent of 4c7e4ec... FUCK
@@ -283,6 +377,8 @@ public class GameManager : MonoBehaviour
             case UIPos.Death:
                 deathUI.UI.SetActive(true);
                 break;
+<<<<<<< HEAD
+<<<<<<< HEAD
 
             case UIPos.Menu:
                 break;
@@ -295,6 +391,34 @@ public class GameManager : MonoBehaviour
                 playUI.UI.SetActive(true);
                 break;
 
+=======
+
+            case UIPos.Menu:
+                break;
+
+            case UIPos.Pause:
+                pauseUI.UI.SetActive(true);
+                break;
+
+            case UIPos.Play:
+                playUI.UI.SetActive(true);
+                break;
+
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+
+            case UIPos.Menu:
+                break;
+
+            case UIPos.Pause:
+                pauseUI.UI.SetActive(true);
+                break;
+
+            case UIPos.Play:
+                playUI.UI.SetActive(true);
+                break;
+
+>>>>>>> parent of 4c7e4ec... FUCK
             case UIPos.Setting:
                 break;
 
@@ -319,6 +443,8 @@ public class GameManager : MonoBehaviour
         PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
         Time.timeScale = 1;
 
+<<<<<<< HEAD
+<<<<<<< HEAD
 <<<<<<< HEAD
         uiPos = UIPos.Death;
 =======
@@ -378,10 +504,21 @@ public class GameManager : MonoBehaviour
 
         uiPos = UIPos.Play;
 >>>>>>> parent of 4c7e4ec... FUCK
+=======
+        uiPos = UIPos.Play;
+    }
+
+    public void Play()
+    {
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+
+        uiPos = UIPos.Play;
+>>>>>>> parent of 4c7e4ec... FUCK
     }
 
     public void Restart()
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         UI[lastUiPos].SetActive(false);
         UI[uiPos].SetActive(true);
@@ -394,6 +531,24 @@ public class GameManager : MonoBehaviour
 
 >>>>>>> parent of 94f23c4... UI
 =======
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+>>>>>>> parent of 4c7e4ec... FUCK
+=======
+        uiPos = UIPos.Play;
+    }
+
+    public void Play()
+    {
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+
+        uiPos = UIPos.Play;
+    }
+
+    public void Restart()
+    {
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
 >>>>>>> parent of 4c7e4ec... FUCK
     }
