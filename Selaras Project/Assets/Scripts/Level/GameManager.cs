@@ -9,6 +9,7 @@ public class GameManager : MonoBehaviour
 {
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     [System.Serializable]
     public class effect
     {
@@ -73,6 +74,24 @@ public class GameManager : MonoBehaviour
     public GameObject uDeath;
 
 >>>>>>> parent of 94f23c4... UI
+=======
+    [Header("PostProcessing Effect")]
+
+    [Tooltip("Post Processing Volume")]
+    [SerializeField] private Volume volume = null;
+
+    [Space(10)]
+    [Header("Cinemachine Camera")]
+    public CinemachineVirtualCamera vCamera;
+
+    [Space(10)]
+    [Header("UI")]
+    public TMP_Text uDistance;
+
+    public GameObject uPause;
+    public GameObject uDeath;
+
+>>>>>>> parent of 94f23c4... UI
 
     Dictionary<UIPos, GameObject> UI = new Dictionary<UIPos, GameObject>();
 
@@ -83,8 +102,12 @@ public class GameManager : MonoBehaviour
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     private UIPos lastUiPos;
     private UIPos uiPos = UIPos.Menu;
+=======
+    [HideInInspector] public PlayerController player;
+>>>>>>> parent of 94f23c4... UI
 =======
     [HideInInspector] public PlayerController player;
 >>>>>>> parent of 94f23c4... UI
@@ -116,6 +139,7 @@ public class GameManager : MonoBehaviour
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         spawnPoint = player.transform.position.x;
         StartMagnitude = baseWater.flowMagnitude;
         baseWater.flowMagnitude = 0;
@@ -126,10 +150,14 @@ public class GameManager : MonoBehaviour
 =======
         depthOfField.focusDistance.value = 0.5f;
 >>>>>>> parent of 94f23c4... UI
+=======
+        depthOfField.focusDistance.value = 0.5f;
+>>>>>>> parent of 94f23c4... UI
         Time.timeScale = 1;
         spawnPoint = player.transform.position.x;
 
         isDeath = false;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         isStart = false;
@@ -152,11 +180,14 @@ public class GameManager : MonoBehaviour
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
+=======
+>>>>>>> parent of 94f23c4... UI
     }
 
     // Update is called once per frame
     void Update()
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         /*if(uiPos != lastUiPos)
@@ -204,11 +235,16 @@ public class GameManager : MonoBehaviour
 =======
         uDistance.text = distance().ToString();
 
+=======
+        uDistance.text = distance().ToString();
+
+>>>>>>> parent of 94f23c4... UI
         if (isDeath)
         {
             depthOfField.focusDistance.value = 0.1f;
             //Time.timeScale = 0;
         }
+<<<<<<< HEAD
 =======
         uDistance.text = distance().ToString();
 
@@ -223,17 +259,23 @@ public class GameManager : MonoBehaviour
     {
 
 >>>>>>> parent of 94f23c4... UI
+=======
+>>>>>>> parent of 94f23c4... UI
     }
 
     public void Respawn()
     {
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 94f23c4... UI
+=======
 >>>>>>> parent of 94f23c4... UI
     }
     
     public void Home()
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
 =======
@@ -246,6 +288,9 @@ public class GameManager : MonoBehaviour
         UI[uiPos].SetActive(true);
 
         lastUiPos = uiPos;
+=======
+
+>>>>>>> parent of 94f23c4... UI
 =======
 
 >>>>>>> parent of 94f23c4... UI

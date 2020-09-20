@@ -1439,6 +1439,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   PostProcessingEffect:
     volume: {fileID: 951386991}
     vignette: {fileID: 0}
@@ -1468,6 +1469,10 @@ MonoBehaviour:
   volume: {fileID: 951386991}
   vCamera: {fileID: 728194935}
 >>>>>>> parent of 94f23c4... UI
+=======
+  volume: {fileID: 951386991}
+  vCamera: {fileID: 728194935}
+>>>>>>> parent of 94f23c4... UI
   uDistance: {fileID: 1129324094}
   uPause: {fileID: 493334662}
   uDeath: {fileID: 711073738}
@@ -1475,6 +1480,9 @@ MonoBehaviour:
   depthOfField: {fileID: 0}
   paniniProjection: {fileID: 0}
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 94f23c4... UI
+=======
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
@@ -1993,6 +2001,9 @@ GameObject:
   - component: {fileID: 710382019}
   - component: {fileID: 710382018}
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 94f23c4... UI
+=======
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
@@ -2046,6 +2057,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
 <<<<<<< HEAD
   m_GameObject: {fileID: 728194933}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
@@ -2107,6 +2119,8 @@ GameObject:
   m_Layer: 0
   m_Name: Other Area
 =======
+=======
+>>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
   m_GameObject: {fileID: 710382016}
@@ -3024,7 +3038,11 @@ RectTransform:
   m_AnchorMax: {x: 1, y: 1}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_AnchoredPosition: {x: -33.799927, y: -33.69995}
+=======
+  m_AnchoredPosition: {x: -33.80005, y: -33.69995}
+>>>>>>> parent of 94f23c4... UI
 =======
   m_AnchoredPosition: {x: -33.80005, y: -33.69995}
 >>>>>>> parent of 94f23c4... UI
@@ -3831,6 +3849,7 @@ CanvasRenderer:
   m_CullTransparentMesh: 0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!114 &1351628266
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4025,6 +4044,8 @@ CanvasRenderer:
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
+=======
+>>>>>>> parent of 94f23c4... UI
 --- !u!1 &1579302706
 GameObject:
   m_ObjectHideFlags: 0
@@ -4176,6 +4197,9 @@ GameObject:
   - component: {fileID: 1587488975}
   - component: {fileID: 1587488974}
 <<<<<<< HEAD
+<<<<<<< HEAD
+>>>>>>> parent of 94f23c4... UI
+=======
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
@@ -4305,8 +4329,11 @@ CanvasRenderer:
   m_CullTransparentMesh: 0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 --- !u!1 &1709144900
 =======
+=======
+>>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
 --- !u!1 &1705733646
@@ -4530,8 +4557,13 @@ MonoBehaviour:
     inputTimer: 0
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   accelleration: 20
   speedThreshold: 20
+=======
+  accelleration: 15
+  speedThreshold: 10
+>>>>>>> parent of 94f23c4... UI
 =======
   accelleration: 15
   speedThreshold: 10
@@ -4555,7 +4587,11 @@ Transform:
   m_LocalRotation: {x: -0, y: -0, z: -0.00000022351739, w: 1}
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
   m_LocalPosition: {x: -14.87, y: 0.1, z: 0}
+=======
+  m_LocalPosition: {x: -14.87, y: 72.8, z: 0}
+>>>>>>> parent of 94f23c4... UI
 =======
   m_LocalPosition: {x: -14.87, y: 72.8, z: 0}
 >>>>>>> parent of 94f23c4... UI
