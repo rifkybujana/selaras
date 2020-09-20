@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (manager.isDeath || !manager.isStart) return;
+        if (manager.isDeath) return;
 
         CheckDeath();
 
@@ -76,7 +76,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x - (Time.deltaTime), rb.velocity.y);
+                    speed = Mathf.Clamp(brake(10), 0, speed);
                 }
 
                 playerInput.buttonHoldTime += Time.deltaTime;
@@ -89,8 +89,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerInput.buttonHoldTime < playerInput.buttonHoldMin)
                 {
-                    //speed = accel();
-                    rb.AddForce(Vector2.right * accelleration);
+                    speed = accel();
                 }
 
                 playerInput.buttonHoldTime = 0;
@@ -98,7 +97,25 @@ public class PlayerController : MonoBehaviour
                 playerInput.inputTimer = 0;
             }
 
-            rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, 0, speedThreshold * 2), rb.velocity.y);
+            if (playerInput.inputTimer < playerInput.MaxInputTime)
+            {
+                rb.velocity = new Vector2(speed, rb.velocity.y);
+            }
+            else
+            {
+                if (rb.velocity.x < 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x + Time.deltaTime, rb.velocity.y);
+                }
+                else if (rb.velocity.x > 0)
+                {
+                    rb.velocity = new Vector2(rb.velocity.x - Time.deltaTime, rb.velocity.y);
+                }
+
+                speed = rb.velocity.x;
+            }
+
+            playerInput.inputTimer += Time.deltaTime;
         }
     }
 
@@ -138,5 +155,16 @@ public class PlayerController : MonoBehaviour
         Gizmos.color = Color.red;
 
         Gizmos.DrawWireCube(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale);
+    }
+
+    
+    private float accel(float a = 1)
+    {
+        return (rb.velocity.x + (a * accelleration * Time.deltaTime));
+    }
+
+    private float brake(float a = 5)
+    {
+        return rb.velocity.x - Time.deltaTime * a;
     }
 }

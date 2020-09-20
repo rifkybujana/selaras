@@ -11,6 +11,29 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
     [System.Serializable]
+    public class PlayUI
+    {
+        public GameObject UI;
+        public TMP_Text distance;
+    }
+
+    [System.Serializable]
+    public class PauseUI
+    {
+        public GameObject UI;
+    }
+
+    [System.Serializable]
+    public class DeathUI
+    {
+        public GameObject UI;
+
+        public TMP_Text pictureTaken;
+        public TMP_Text coinTaken;
+        public TMP_Text totalPoint;
+    }
+
+    [System.Serializable]
     public class effect
     {
         public Volume volume = null;
@@ -46,22 +69,18 @@ public class GameManager : MonoBehaviour
     {
         Play,
         Menu,
+        Setting,
         Pause,
-        Death,
-        Exit
+        Death
     }
 
     public effect PostProcessingEffect = new effect();
-    public GameObject playUI;
-    public GameObject pauseUI;
-    public GameObject deathUI;
-    public GameObject menuUI;
-    public GameObject exitUI;
-
-    public TMP_Text speedUI;
-    public TMP_Text distanceUI;
+    public PlayUI playUI = new PlayUI();
+    public PauseUI pauseUI = new PauseUI();
+    public DeathUI deathUI = new DeathUI();
 
     public CinemachineVirtualCamera vCamera;
+<<<<<<< HEAD
     public BuoyancyEffector2D baseWater;
 =======
     public GameObject uPause;
@@ -72,6 +91,8 @@ public class GameManager : MonoBehaviour
 =======
     public GameObject uPause;
     public GameObject uDeath;
+=======
+>>>>>>> parent of 4c7e4ec... FUCK
 
 >>>>>>> parent of 94f23c4... UI
 =======
@@ -93,8 +114,6 @@ public class GameManager : MonoBehaviour
 
 >>>>>>> parent of 94f23c4... UI
 
-    Dictionary<UIPos, GameObject> UI = new Dictionary<UIPos, GameObject>();
-
     //Post processing effect
     [HideInInspector] public Vignette vignette;
     [HideInInspector] public DepthOfField depthOfField;
@@ -104,6 +123,7 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
     private UIPos lastUiPos;
+<<<<<<< HEAD
     private UIPos uiPos = UIPos.Menu;
 =======
     [HideInInspector] public PlayerController player;
@@ -114,19 +134,16 @@ public class GameManager : MonoBehaviour
 =======
     [HideInInspector] public PlayerController player;
 >>>>>>> parent of 94f23c4... UI
+=======
+    [HideInInspector] public UIPos uiPos = UIPos.Play;
+>>>>>>> parent of 4c7e4ec... FUCK
 
     [HideInInspector] public bool isDeath;
-    [HideInInspector] public bool isStart;
 
-    private float spawnPoint;
-    private float StartMagnitude;
-    private float distance()
+    [HideInInspector] public float spawnPoint;
+    [HideInInspector] public float distance()
     {
         return Mathf.Abs((int)(spawnPoint - player.transform.position.x));
-    }
-    private float speed()
-    {
-        return Mathf.Abs((int)player.GetComponent<Rigidbody2D>().velocity.x);
     }
 
     private void Awake()
@@ -137,6 +154,7 @@ public class GameManager : MonoBehaviour
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -153,10 +171,15 @@ public class GameManager : MonoBehaviour
 =======
         depthOfField.focusDistance.value = 0.5f;
 >>>>>>> parent of 94f23c4... UI
+=======
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+        spawnPoint = player.transform.position.x;
+>>>>>>> parent of 4c7e4ec... FUCK
         Time.timeScale = 1;
         spawnPoint = player.transform.position.x;
 
         isDeath = false;
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -182,6 +205,10 @@ public class GameManager : MonoBehaviour
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
+=======
+
+        lastUiPos = uiPos;
+>>>>>>> parent of 4c7e4ec... FUCK
     }
 
     // Update is called once per frame
@@ -190,35 +217,96 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         /*if(uiPos != lastUiPos)
-        {
-            ChangeUI();
-        }*/
-
+=======
         if (isDeath)
+>>>>>>> parent of 4c7e4ec... FUCK
         {
-            Death();
+            PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
+            Time.timeScale = 0.5f;
+
+            uiPos = UIPos.Death;
+        }
+        else
+        {
+            playUI.distance.text = distance().ToString();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape) && !isDeath)
+        {
+            if(uiPos == UIPos.Pause)
+            {
+                Resume();
+            }
+            else if(uiPos == UIPos.Play)
+            {
+                Pause();
+            }
+        }
+
+        if(uiPos != lastUiPos)
+        {
+            SetUI();
         }
     }
 
-    public void StartGame()
+    public void SetUI()
     {
-        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
-        baseWater.flowMagnitude = StartMagnitude;
-        isStart = true;
+        switch (lastUiPos)
+        {
+            case UIPos.Death:
+                deathUI.UI.SetActive(false);
+                break;
 
-        uiPos = UIPos.Play;
+            case UIPos.Menu:
+                break;
+
+            case UIPos.Pause:
+                pauseUI.UI.SetActive(false);
+                break;
+
+            case UIPos.Play:
+                playUI.UI.SetActive(false);
+                break;
+
+            case UIPos.Setting:
+                break;
+
+            default:
+                Debug.LogError("Unknown UI Type");
+                break;
+        }
+
+        switch (uiPos)
+        {
+            case UIPos.Death:
+                deathUI.UI.SetActive(true);
+                break;
+
+            case UIPos.Menu:
+                break;
+
+            case UIPos.Pause:
+                pauseUI.UI.SetActive(true);
+                break;
+
+            case UIPos.Play:
+                playUI.UI.SetActive(true);
+                break;
+
+            case UIPos.Setting:
+                break;
+
+            default:
+                Debug.LogError("Unknown UI Type");
+                break;
+        }
+
+        lastUiPos = uiPos;
     }
 
-    public void SetSpeedAndDistance()
-    {
-        if (isDeath) return;
-
-        distanceUI.text = distance().ToString() + " m";
-        speedUI.text = speed().ToString() + " m / s";
-    }
-
-    public void PauseGame()
+    public void Pause()
     {
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
         Time.timeScale = 0;
@@ -226,11 +314,12 @@ public class GameManager : MonoBehaviour
         uiPos = UIPos.Pause;
     }
 
-    public void Death()
+    public void Resume()
     {
-        PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
-        Time.timeScale = 0.5f;
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+        Time.timeScale = 1;
 
+<<<<<<< HEAD
         uiPos = UIPos.Death;
 =======
         uDistance.text = distance().ToString();
@@ -271,19 +360,29 @@ public class GameManager : MonoBehaviour
 >>>>>>> parent of 94f23c4... UI
 =======
 >>>>>>> parent of 94f23c4... UI
+=======
+        uiPos = UIPos.Play;
+>>>>>>> parent of 4c7e4ec... FUCK
     }
-    
-    public void Home()
+
+    public void Play()
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
 =======
 >>>>>>> parent of 94f23c4... UI
+=======
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+
+        uiPos = UIPos.Play;
+>>>>>>> parent of 4c7e4ec... FUCK
     }
 
-    public void ChangeUI()
+    public void Restart()
     {
+<<<<<<< HEAD
         UI[lastUiPos].SetActive(false);
         UI[uiPos].SetActive(true);
 
@@ -294,5 +393,8 @@ public class GameManager : MonoBehaviour
 =======
 
 >>>>>>> parent of 94f23c4... UI
+=======
+        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+>>>>>>> parent of 4c7e4ec... FUCK
     }
 }

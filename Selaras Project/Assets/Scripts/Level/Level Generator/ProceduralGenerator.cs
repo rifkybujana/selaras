@@ -339,7 +339,6 @@ public class ProceduralGenerator : MonoBehaviour
     {
         //mengambil semua titik vektor bagian atas dari array vertices
         List<Vector2> p = new List<Vector2>();
-        p.Add(new Vector2(vertices[s - 1].x, vertices[s-1].y - 0.1f));
 
         for (int i = s; i < vertices.Count; i += 2)
         {
