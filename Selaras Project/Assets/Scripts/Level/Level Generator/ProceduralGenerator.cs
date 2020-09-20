@@ -66,23 +66,16 @@ public class ProceduralGenerator : MonoBehaviour
         {
             meshType = MeshType.Flat;
 
-            if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 1].meshType == MeshType.Flat)
-            {
-                int RandomHeigh = Random.Range(1, 3);
+            int RandomHeigh = Random.Range(1, 3);
 
-                //jika mesh sebelumnya tipenya bukan flat
-                if (RandomHeigh == 1)
-                {
-                    flatHeight = -0.4f;
-                }
-                else
-                {
-                    flatHeight = 0;
-                }
+            //jika mesh sebelumnya tipenya bukan flat
+            if (RandomHeigh == 1)
+            {
+                flatHeight = -0.4f;
             }
             else
             {
-                flatHeight = -0.4f;
+                flatHeight = 0;
             }
         }
         else
@@ -250,40 +243,43 @@ public class ProceduralGenerator : MonoBehaviour
     /// </summary>
     private void AddCollider()
     {
-        EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
-        BuoyancyEffector2D bEffector = gameObject.AddComponent<BuoyancyEffector2D>();
-        List<Vector2> v = new List<Vector2>();
-
-        switch (meshType)
+        if(meshType == MeshType.StreamDown)
         {
-            case MeshType.StreamDown:
-                BoxCollider2D bCol = gameObject.AddComponent<BoxCollider2D>();
-                bCol.offset = new Vector2(2.25f, -1f);
-                bCol.size = new Vector2(4.5f, 2f);
-                bCol.isTrigger = true;
-                bCol.usedByEffector = true;
+            //menambahkan komponen edge collider ke gameObject
+            EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
+            BoxCollider2D bCol = gameObject.AddComponent<BoxCollider2D>();
 
-                bEffector.flowMagnitude = 15;
+            bCol.offset = new Vector2(2.25f, -1f);
+            bCol.size = new Vector2(4.5f, 2f);
 
-                //mengambil semua titik vektor bagian atas dari array vertices
-                v = GetTopVertices(41);
-                v.Add(vertices[vertices.Count - 2]);
+            bCol.isTrigger = true;
+            bCol.usedByEffector = true;
 
-                //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
-                col.points = v.ToArray();
-                break;
+            BuoyancyEffector2D bEffector = gameObject.AddComponent<BuoyancyEffector2D>();
 
-            case MeshType.Flat:
-                v = GetTopVertices();
-                v.Add(vertices[vertices.Count - 2]);
+            bEffector.flowMagnitude = 5;
 
-                col.points = v.ToArray();
-                col.isTrigger = true;
-                col.usedByEffector = true;
+            //mengambil semua titik vektor bagian atas dari array vertices
+            List<Vector2> v = GetTopVertices(41);
+            v.Add(vertices[vertices.Count - 2]);
 
-                bEffector.surfaceLevel += flatHeight;
-                bEffector.flowMagnitude = 10;
-                break;
+            //menempatkan sudut colliders sesuai dengan titik vektor dari array vertices
+            col.points = v.ToArray();
+        }
+        else
+        {
+            EdgeCollider2D col = gameObject.AddComponent<EdgeCollider2D>();
+
+            List<Vector2> v = GetTopVertices();
+            v.Add(vertices[vertices.Count - 2]);
+
+            col.points = v.ToArray();
+            col.isTrigger = true;
+            col.usedByEffector = true;
+
+            BuoyancyEffector2D bEffector = gameObject.AddComponent<BuoyancyEffector2D>();
+            bEffector.surfaceLevel = -0.4f;
+            bEffector.flowMagnitude = 5;
         }
     }
 

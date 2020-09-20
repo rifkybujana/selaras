@@ -3,7 +3,6 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using Cinemachine;
-using TMPro;
 
 public class GameManager : MonoBehaviour
 {
@@ -87,10 +86,11 @@ public class GameManager : MonoBehaviour
     [Header("PostProcessing Effect")]
 
     [Tooltip("Post Processing Volume")]
-    [SerializeField] private Volume volume = null;
+    [SerializeField] private Volume volume;
 
     [Space(10)]
     [Header("Cinemachine Camera")]
+<<<<<<< HEAD
     public CinemachineVirtualCamera vCamera;
 >>>>>>> parent of 94f23c4... UI
 
@@ -151,6 +151,10 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
     [Tooltip("Post Processing Volume")]
     [SerializeField] private Volume volume = null;
+=======
+
+    public CinemachineVirtualCamera vCamera;
+>>>>>>> parent of 2bb49bb... small change
 
     [Space(10)]
     [Header("Cinemachine Camera")]
@@ -180,6 +184,7 @@ public class GameManager : MonoBehaviour
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
     private UIPos lastUiPos;
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -204,13 +209,9 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public UIPos uiPos = UIPos.Play;
 >>>>>>> parent of 4c7e4ec... FUCK
 
+=======
+>>>>>>> parent of 2bb49bb... small change
     [HideInInspector] public bool isDeath;
-
-    [HideInInspector] public float spawnPoint;
-    [HideInInspector] public float distance()
-    {
-        return Mathf.Abs((int)(spawnPoint - player.transform.position.x));
-    }
 
     private void Awake()
     {
@@ -218,6 +219,7 @@ public class GameManager : MonoBehaviour
         volume.sharedProfile.TryGet<DepthOfField>(out depthOfField);
         volume.sharedProfile.TryGet<PaniniProjection>(out paniniProjection);
 
+<<<<<<< HEAD
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
 <<<<<<< HEAD
@@ -253,6 +255,9 @@ public class GameManager : MonoBehaviour
 >>>>>>> parent of 4c7e4ec... FUCK
         Time.timeScale = 1;
         spawnPoint = player.transform.position.x;
+=======
+        depthOfField.focusDistance.value = 0.5f;
+>>>>>>> parent of 2bb49bb... small change
 
         isDeath = false;
 <<<<<<< HEAD
@@ -300,6 +305,7 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+<<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
@@ -468,6 +474,9 @@ public class GameManager : MonoBehaviour
             depthOfField.focusDistance.value = 0.1f;
             //Time.timeScale = 0;
         }
+=======
+        
+>>>>>>> parent of 2bb49bb... small change
     }
 
     public void Respawn()
