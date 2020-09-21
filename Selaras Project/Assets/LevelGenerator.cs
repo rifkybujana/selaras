@@ -35,4 +35,17 @@ public class LevelGenerator : MonoBehaviour
             MeshObjects.RemoveAt(0);
         }
     }
+
+    public void ResetLevel()
+    {
+        lastPoint = Vector3.zero;
+        
+        for(int i = 0; i < MeshObjects.Count - 1; i++)
+        {
+            Destroy(MeshObjects[i]);
+            MeshObjects.RemoveAt(i);
+        }
+
+        PlaceObject();
+    }
 }

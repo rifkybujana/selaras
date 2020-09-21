@@ -65,7 +65,7 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        if (manager.isDeath) return;
+        if (manager.isDeath || manager.uiPos == GameManager.UIPos.Pause || !manager.isStart) return;
 
         CheckDeath();
 
