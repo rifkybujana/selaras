@@ -10,6 +10,7 @@ public class ProceduralGenerator : MonoBehaviour
     [Space(10)]
     [Header("Obstacle")]
     public GameObject WaterFall;
+    public GameObject Stone;
 
 
     #region private/hidden variable
@@ -20,7 +21,6 @@ public class ProceduralGenerator : MonoBehaviour
     //apakah object ini sudah menggenerasikan object baru
     bool isPlaced = false;
 
-    //Jenis Procedural Mesh
     public enum MeshType
     {
         Flat,
@@ -28,6 +28,14 @@ public class ProceduralGenerator : MonoBehaviour
     }
 
     [HideInInspector] public MeshType meshType = MeshType.StreamDown;
+
+    public enum FlatType
+    {
+        WaterFall,
+        PhotoSpot
+    }
+
+    [HideInInspector] public FlatType flatType = FlatType.WaterFall;
 
     //List of curve
     List<Vector3[]> curves = new List<Vector3[]>();
@@ -39,7 +47,7 @@ public class ProceduralGenerator : MonoBehaviour
 
     float xPos, yBefore;
 
-    float flatHeight;
+    float flatHeight = -0.4f;
 
     #endregion
 
@@ -62,27 +70,23 @@ public class ProceduralGenerator : MonoBehaviour
         int RandomizeType = Random.Range(1, 3);
 
         //jika bukan di awal generasi dan hasil dari random itu = 2
-        if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2)
+        if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2 && levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 1].meshType != MeshType.Flat)
         {
             meshType = MeshType.Flat;
 
-            if (levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 1].meshType == MeshType.Flat)
-            {
-                int RandomHeigh = Random.Range(1, 3);
+            Instantiate(Stone, transform);
 
-                //jika mesh sebelumnya tipenya bukan flat
-                if (RandomHeigh == 1)
-                {
-                    flatHeight = -0.4f;
-                }
-                else
-                {
-                    flatHeight = 0;
-                }
+            int RandomType = Random.Range(1, 3);
+
+            Debug.Log(RandomType);
+
+            if(RandomType == 1)
+            {
+                flatType = FlatType.PhotoSpot;
             }
             else
             {
-                flatHeight = -0.4f;
+                flatType = FlatType.WaterFall;
             }
         }
         else
@@ -125,14 +129,21 @@ public class ProceduralGenerator : MonoBehaviour
     {
         List<Vector2> v = GetTopVertices();
 
-        if(meshType == MeshType.Flat)
+        if(meshType == MeshType.Flat )
         {
-            int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
+            if(flatType == FlatType.WaterFall)
+            {
+                int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
 
-            WaterFall = Instantiate(WaterFall, Vector3.zero, Quaternion.identity, transform);
+                WaterFall = Instantiate(WaterFall, Vector3.zero, Quaternion.identity, transform);
 
-            WaterFall.transform.localPosition = v[random];
-            WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+                WaterFall.transform.localPosition = v[random];
+                WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
+            }
+            else
+            {
+                //Spawn Photo Spot
+            }
         }
     }
 

@@ -2,6 +2,7 @@
 using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
+using UnityEngine.UI;
 using Cinemachine;
 using TMPro;
 using System.Collections;
@@ -38,6 +39,14 @@ public class GameManager : MonoBehaviour
     public TMP_Text distanceText;
     public TMP_Text speedText;
 
+    public TMP_Text maxDistanceText;
+    public TMP_Text maxSpeedText;
+    public TMP_Text photoCapturedText;
+
+    public Button CapturePhoto;
+
+    public Vector2 ScreenShotResolution = new Vector2(2550, 3300);
+
     public CinemachineVirtualCamera vCamera;
     public BuoyancyEffector2D BaseWaterBuoyancy;
     public LevelGenerator levelGenerator;
@@ -49,6 +58,7 @@ public class GameManager : MonoBehaviour
 
     //Post processing effect
     [HideInInspector] public PlayerController player;
+    [HideInInspector] public ProceduralGenerator pGen;
 
     private UIPos lastUiPos;
     [HideInInspector] public UIPos uiPos = UIPos.Menu;
@@ -62,6 +72,11 @@ public class GameManager : MonoBehaviour
     {
         return Mathf.Abs((int)(spawnPoint.x - player.transform.position.x));
     }
+    [HideInInspector] public int speed()
+    {
+        return Mathf.Abs((int)player.GetComponent<Rigidbody2D>().velocity.x);
+    }
+
     [HideInInspector] public int PhotoCaptured;
     [HideInInspector] public int maxDistance;
     [HideInInspector] public int maxSpeed;
@@ -113,6 +128,9 @@ public class GameManager : MonoBehaviour
         {
             distanceText.text = distance().ToString() + " m";
             speedText.text = ((int)player.GetComponent<Rigidbody2D>().velocity.x).ToString() + " m/s";
+
+            GetMaxDistance();
+            GetMaxSpeed();
         }
 
         if (Input.GetKeyDown(KeyCode.Escape))
@@ -131,6 +149,15 @@ public class GameManager : MonoBehaviour
         {
             SetUI();
         }
+
+        if(pGen != null && pGen.meshType == ProceduralGenerator.MeshType.Flat && pGen.flatType == ProceduralGenerator.FlatType.PhotoSpot)
+        {
+            CapturePhoto.gameObject.SetActive(true);
+        }
+        else
+        {
+            CapturePhoto.gameObject.SetActive(false);
+        }
     }
 
     public void SetUI()
@@ -145,6 +172,10 @@ public class GameManager : MonoBehaviour
     {
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
         Time.timeScale = 0.5f;
+
+        maxDistanceText.text = maxDistance + " m";
+        maxSpeedText.text = maxSpeed + " m/s";
+        photoCapturedText.text = PhotoCaptured.ToString();
 
         uiPos = UIPos.Death;
     }
@@ -178,11 +209,6 @@ public class GameManager : MonoBehaviour
         Application.Quit();
     }
 
-    public void CancelExit()
-    {
-
-    }
-
     public void StartGame()
     {
         isStart = true;
@@ -198,6 +224,7 @@ public class GameManager : MonoBehaviour
         PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
         isDeath = false;
         player.transform.position = spawnPoint;
+        player.transform.rotation = Quaternion.identity;
         levelGenerator.ResetLevel();
         Time.timeScale = 1;
 
@@ -210,5 +237,42 @@ public class GameManager : MonoBehaviour
     public void Home()
     {
         SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+    }
+
+    public static string ScreenShotName(int width, int height)
+    {
+        return string.Format("{0}/screenshots/screen_{1}x{2}_{3}.png",
+                              Application.dataPath,
+                              width, height,
+                              System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
+    }
+
+    public void TakePhoto()
+    {
+        PhotoCaptured++;
+
+        RenderTexture rt = new RenderTexture((int)ScreenShotResolution.x, (int)ScreenShotResolution.y, 24);
+        Camera.main.targetTexture = rt;
+        Texture2D screenshot = new Texture2D((int)ScreenShotResolution.x, (int)ScreenShotResolution.y, TextureFormat.RGB24, false);
+        Camera.main.Render();
+        RenderTexture.active = rt;
+        screenshot.ReadPixels(new Rect(0, 0, (int)ScreenShotResolution.x, (int)ScreenShotResolution.y), 0, 0);
+        Camera.main.targetTexture = null;
+        RenderTexture.active = null;
+        Destroy(rt);
+        byte[] bytes = screenshot.EncodeToPNG();
+        string fileName = ScreenShotName((int)ScreenShotResolution.x, (int)ScreenShotResolution.y);
+        System.IO.File.WriteAllBytes(fileName, bytes);
+        Debug.Log(string.Format("Took screenshot to: {0}", fileName));
+    }
+
+    public void GetMaxSpeed()
+    {
+        if (speed() > maxSpeed) maxSpeed = speed();
+    }
+
+    public void GetMaxDistance()
+    {
+        if (distance() > maxDistance) maxDistance = distance();
     }
 }

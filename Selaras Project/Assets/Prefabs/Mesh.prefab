@@ -47,7 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolution: 20
   WaterFall: {fileID: 4070264963640620075, guid: cf0e656de04ad4241a7f8494203f19d7, type: 3}
+  Stone: {fileID: 3722789399309432535, guid: b712668a3fa725c4e9e1acde5f60388a, type: 3}
   meshType: 1
+  flatType: 0
 --- !u!33 &887798370730367048
 MeshFilter:
   m_ObjectHideFlags: 0
