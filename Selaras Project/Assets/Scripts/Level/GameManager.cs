@@ -195,8 +195,11 @@ public class GameManager : MonoBehaviour
     public void RestartGame()
     {
         player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+        isDeath = false;
         player.transform.position = spawnPoint;
         levelGenerator.ResetLevel();
+        Time.timeScale = 1;
 
         maxDistance = 0;
         maxSpeed = 0;

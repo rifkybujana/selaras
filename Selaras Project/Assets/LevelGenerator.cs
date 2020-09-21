@@ -11,7 +11,7 @@ public class LevelGenerator : MonoBehaviour
     public Vector3 lastPoint;
 
     //list semua mesh object
-    [HideInInspector] public List<ProceduralGenerator> MeshObjects = new List<ProceduralGenerator>();
+    public List<ProceduralGenerator> MeshObjects = new List<ProceduralGenerator>();
 
     // Start is called before the first frame update
     void Start()
@@ -40,11 +40,12 @@ public class LevelGenerator : MonoBehaviour
     {
         lastPoint = Vector3.zero;
         
-        for(int i = 0; i < MeshObjects.Count - 1; i++)
+        for(int i = 0; i < MeshObjects.Count; i++)
         {
-            Destroy(MeshObjects[i]);
-            MeshObjects.RemoveAt(i);
+            Destroy(MeshObjects[i].gameObject);
         }
+
+        MeshObjects.Clear();
 
         PlaceObject();
     }
