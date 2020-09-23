@@ -7,10 +7,7 @@ public class ProceduralGenerator : MonoBehaviour
     [Tooltip("Seberapa mulus kurvanya")]
     [SerializeField] private int resolution = 20;
 
-    [Space(10)]
-    [Header("Obstacle")]
-    public GameObject WaterFall;
-    public GameObject Stone;
+    public Obstacles obstacles;
 
 
     #region private/hidden variable
@@ -74,8 +71,6 @@ public class ProceduralGenerator : MonoBehaviour
         {
             meshType = MeshType.Flat;
 
-            Instantiate(Stone, transform);
-
             int RandomType = Random.Range(1, 3);
 
             Debug.Log(RandomType);
@@ -131,11 +126,15 @@ public class ProceduralGenerator : MonoBehaviour
 
         if(meshType == MeshType.Flat )
         {
+            GameObject stone = Instantiate(obstacles.RandomizedStones(true), transform);
+
+            stone.transform.localPosition = new Vector2(0.3f, -0.4f);
+
             if(flatType == FlatType.WaterFall)
             {
                 int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
 
-                WaterFall = Instantiate(WaterFall, Vector3.zero, Quaternion.identity, transform);
+                GameObject WaterFall = Instantiate(obstacles.RandomizedWaterfall(), Vector3.zero, Quaternion.identity, transform);
 
                 WaterFall.transform.localPosition = v[random];
                 WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
@@ -143,6 +142,22 @@ public class ProceduralGenerator : MonoBehaviour
             else
             {
                 //Spawn Photo Spot
+                GameObject g = Instantiate(obstacles.RandomizedBackground(), transform);
+                g.transform.localPosition = new Vector2(v[v.Count / 2].x, -0.4f);
+            }
+
+            for(int i = 5; i < v.Count; i += 5)
+            {
+                GameObject g = obstacles.GetRandom(transform);
+                g.transform.localPosition = new Vector2(v[i].x, -0.4f);
+            }
+        }
+        else
+        {
+            for (int i = 5; i < 20; i += 5)
+            {
+                GameObject g = obstacles.GetRandom(transform);
+                g.transform.localPosition = new Vector2(v[i].x, -0.4f);
             }
         }
     }

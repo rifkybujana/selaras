@@ -31,8 +31,6 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private float speed;
-
     private float Map(float x, float in_min, float in_max, float out_min, float out_max)
     {
         return Mathf.Clamp((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min, out_min, out_max);
@@ -77,7 +75,7 @@ public class PlayerController : MonoBehaviour
             {
                 if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
                 {
-                    rb.velocity = new Vector2(rb.velocity.x - 0.5f, rb.velocity.y);
+                    rb.velocity = new Vector2(rb.velocity.x - (Time.deltaTime * speedThreshold / 2), rb.velocity.y);
                 }
 
                 playerInput.buttonHoldTime += Time.deltaTime;
@@ -94,8 +92,6 @@ public class PlayerController : MonoBehaviour
                 playerInput.buttonHoldTime = 0;
             }
         }
-
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, 0, speedThreshold * 1.5f), rb.velocity.y);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

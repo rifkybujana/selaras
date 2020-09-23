@@ -251,19 +251,7 @@ public class GameManager : MonoBehaviour
     {
         PhotoCaptured++;
 
-        RenderTexture rt = new RenderTexture((int)ScreenShotResolution.x, (int)ScreenShotResolution.y, 24);
-        Camera.main.targetTexture = rt;
-        Texture2D screenshot = new Texture2D((int)ScreenShotResolution.x, (int)ScreenShotResolution.y, TextureFormat.RGB24, false);
-        Camera.main.Render();
-        RenderTexture.active = rt;
-        screenshot.ReadPixels(new Rect(0, 0, (int)ScreenShotResolution.x, (int)ScreenShotResolution.y), 0, 0);
-        Camera.main.targetTexture = null;
-        RenderTexture.active = null;
-        Destroy(rt);
-        byte[] bytes = screenshot.EncodeToPNG();
-        string fileName = ScreenShotName((int)ScreenShotResolution.x, (int)ScreenShotResolution.y);
-        System.IO.File.WriteAllBytes(fileName, bytes);
-        Debug.Log(string.Format("Took screenshot to: {0}", fileName));
+        ScreenCapture.CaptureScreenshot(ScreenShotName((int)ScreenShotResolution.x, (int)ScreenShotResolution.y));
     }
 
     public void GetMaxSpeed()

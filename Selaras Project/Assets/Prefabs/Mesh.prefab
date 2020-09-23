@@ -46,8 +46,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   resolution: 20
-  WaterFall: {fileID: 4070264963640620075, guid: cf0e656de04ad4241a7f8494203f19d7, type: 3}
-  Stone: {fileID: 3722789399309432535, guid: b712668a3fa725c4e9e1acde5f60388a, type: 3}
+  obstacles: {fileID: 11400000, guid: 2a0200970c463db479c89d660aebd8a7, type: 2}
   meshType: 1
   flatType: 0
 --- !u!33 &887798370730367048
@@ -77,7 +76,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: a97c105638bdf8b4a8650670310a4cd3, type: 2}
+  - {fileID: 2100000, guid: 356112ca8327c92438437007b621b319, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

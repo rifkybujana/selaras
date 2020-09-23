@@ -93,6 +93,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6460070807601126061}
   - component: {fileID: 5496191767857400105}
+  - component: {fileID: 3302139566889227509}
   m_Layer: 11
   m_Name: Stone
   m_TagString: Untagged
@@ -144,6 +145,35 @@ EdgeCollider2D:
   m_AdjacentEndPoint: {x: 0, y: 0}
   m_UseAdjacentStartPoint: 0
   m_UseAdjacentEndPoint: 0
+--- !u!114 &3302139566889227509
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3722789399309432535}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7db70e0ea77f5ac47a8f4565a9406397, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_ShadowGroup: 0
+  m_HasRenderer: 0
+  m_UseRendererSilhouette: 1
+  m_CastsShadows: 1
+  m_SelfShadows: 0
+  m_ApplyToSortingLayers: 00000000
+  m_ShapePath:
+  - {x: -0.35803375, y: 0.2070979, z: 0}
+  - {x: -0.26677018, y: 0.040366624, z: 0}
+  - {x: -0.00040604585, y: 0.49963135, z: 0}
+  - {x: 0.29900146, y: -0.014618293, z: 0}
+  - {x: 0.41610062, y: 0.1844218, z: 0}
+  - {x: 0.7106083, y: -0.26087207, z: 0}
+  - {x: -0.62497145, y: -0.25035524, z: 0}
+  m_ShapePathHash: 1488799453
+  m_Mesh: {fileID: 0}
+  m_InstanceId: 29272
 --- !u!1 &3955136046692807791
 GameObject:
   m_ObjectHideFlags: 0
