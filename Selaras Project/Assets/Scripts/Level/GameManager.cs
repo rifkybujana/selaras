@@ -83,6 +83,9 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        vCamera.Follow = null;
+        vCamera.LookAt = null;
+
         PostProcessingEffect.volume.sharedProfile.TryGet<Vignette>(out PostProcessingEffect.vignette);
         PostProcessingEffect.volume.sharedProfile.TryGet<DepthOfField>(out PostProcessingEffect.depthOfField);
         PostProcessingEffect.volume.sharedProfile.TryGet<PaniniProjection>(out PostProcessingEffect.paniniProjection);
@@ -113,11 +116,23 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (uiPos != lastUiPos)
+        {
+            Debug.Log(uiPos + " " + lastUiPos);
+            SetUI();
+        }
+
         if (!isStart)
         {
             if (isDeath) isDeath = false;
 
             return;
+        }
+
+        if(vCamera.Follow == null)
+        {
+            vCamera.Follow = player.transform;
+            vCamera.LookAt = player.transform;
         }
 
         if (isDeath)
@@ -145,11 +160,6 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (uiPos != lastUiPos)
-        {
-            SetUI();
-        }
-
         if(pGen != null && pGen.meshType == ProceduralGenerator.MeshType.Flat && pGen.flatType == ProceduralGenerator.FlatType.PhotoSpot)
         {
             CapturePhoto.gameObject.SetActive(true);
@@ -158,6 +168,18 @@ public class GameManager : MonoBehaviour
         {
             CapturePhoto.gameObject.SetActive(false);
         }
+
+        if (!CapturePhoto.enabled)
+        {
+            StartCoroutine(EnableCapturePhoto());
+        }
+    }
+
+    IEnumerator EnableCapturePhoto()
+    {
+        yield return new WaitForSeconds(3);
+
+        CapturePhoto.enabled = true;
     }
 
     public void SetUI()
@@ -236,7 +258,27 @@ public class GameManager : MonoBehaviour
 
     public void Home()
     {
-        SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+        isDeath = false;
+        isStart = false;
+
+        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        player.transform.position = spawnPoint;
+        player.transform.rotation = Quaternion.identity;
+
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
+        levelGenerator.ResetLevel();
+
+        BaseWaterBuoyancy.flowMagnitude = 0;
+        Time.timeScale = 1;
+        maxDistance = 0;
+        maxSpeed = 0;
+
+        uiPos = UIPos.Menu;
+
+        vCamera.Follow = null;
+        vCamera.LookAt = null;
+
+        //SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
     }
 
     public static string ScreenShotName(int width, int height)
@@ -249,9 +291,22 @@ public class GameManager : MonoBehaviour
 
     public void TakePhoto()
     {
+        StartCoroutine(CaptureScreen());
+
         PhotoCaptured++;
+        CapturePhoto.enabled = false;
+    }
+
+    public IEnumerator CaptureScreen()
+    {
+        yield return null;
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = false;
+
+        yield return new WaitForEndOfFrame();
 
         ScreenCapture.CaptureScreenshot(ScreenShotName((int)ScreenShotResolution.x, (int)ScreenShotResolution.y));
+
+        GameObject.Find("Canvas").GetComponent<Canvas>().enabled = true;
     }
 
     public void GetMaxSpeed()

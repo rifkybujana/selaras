@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class Sun : MonoBehaviour
 {
+    public GameManager manager;
+
     private Vector3 jarak;
 
     // Start is called before the first frame update
@@ -15,6 +17,8 @@ public class Sun : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!manager.isStart) return;
+
         transform.position = Camera.main.transform.position + jarak;
     }
 }

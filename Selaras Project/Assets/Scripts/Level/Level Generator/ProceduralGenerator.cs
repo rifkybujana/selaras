@@ -8,7 +8,7 @@ public class ProceduralGenerator : MonoBehaviour
     [SerializeField] private int resolution = 20;
 
     public Obstacles obstacles;
-
+    public LayerMask playerLayer;
 
     #region private/hidden variable
 
@@ -146,7 +146,7 @@ public class ProceduralGenerator : MonoBehaviour
                 g.transform.localPosition = new Vector2(v[v.Count / 2].x, -0.4f);
             }
 
-            for(int i = 5; i < v.Count; i += 5)
+            for(int i = 5; i < v.Count - 5; i += 5)
             {
                 GameObject g = obstacles.GetRandom(transform);
                 g.transform.localPosition = new Vector2(v[i].x, -0.4f);
@@ -157,7 +157,7 @@ public class ProceduralGenerator : MonoBehaviour
             for (int i = 5; i < 20; i += 5)
             {
                 GameObject g = obstacles.GetRandom(transform);
-                g.transform.localPosition = new Vector2(v[i].x, -0.4f);
+                g.transform.localPosition = new Vector2(v[i].x, g.transform.localPosition.y);
             }
         }
     }
@@ -308,7 +308,9 @@ public class ProceduralGenerator : MonoBehaviour
                 col.usedByEffector = true;
 
                 bEffector.surfaceLevel += flatHeight;
+                bEffector.density = 1f;
                 bEffector.flowMagnitude = 10;
+                bEffector.colliderMask = playerLayer;
                 break;
         }
     }

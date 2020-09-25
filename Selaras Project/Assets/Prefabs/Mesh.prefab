@@ -47,6 +47,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   resolution: 20
   obstacles: {fileID: 11400000, guid: 2a0200970c463db479c89d660aebd8a7, type: 2}
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 256
   meshType: 1
   flatType: 0
 --- !u!33 &887798370730367048

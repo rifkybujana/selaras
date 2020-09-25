@@ -21,7 +21,6 @@ public class PlayerController : MonoBehaviour
     [Header("Ground Check")]
 
     [SerializeField] private LayerMask GroundLayerMask = new LayerMask();
-    [SerializeField] private LayerMask StoneLayerMask = new LayerMask();
 
     [SerializeField] private Vector2 GroundCheckScale = new Vector2(1, 1);
     [SerializeField] private Vector2 GroundCheckPos = new Vector2(0, 0);
@@ -92,6 +91,8 @@ public class PlayerController : MonoBehaviour
                 playerInput.buttonHoldTime = 0;
             }
         }
+
+        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, 0.5f, Mathf.Infinity), rb.velocity.y);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -106,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (rb.velocity.y < -speedThreshold || collision.gameObject.layer == StoneLayerMask)
+        if (rb.velocity.y < -speedThreshold)
         {
             manager.isDeath = true;
         }

@@ -63,7 +63,7 @@ MonoBehaviour:
   - {x: -0.62794477, y: 0.034922775, z: -0.000000029802322}
   m_ShapePathHash: -258234656
   m_Mesh: {fileID: 0}
-  m_InstanceId: -246768
+  m_InstanceId: -27672
 --- !u!1 &6685904631141576774
 GameObject:
   m_ObjectHideFlags: 0
@@ -89,7 +89,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6685904631141576774}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.03614936, y: 0.558, z: 0}
+  m_LocalPosition: {x: 0.03614936, y: 0.488, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 6738079790186587205}
