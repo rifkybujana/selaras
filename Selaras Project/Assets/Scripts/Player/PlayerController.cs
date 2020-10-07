@@ -2,6 +2,16 @@
 
 public class PlayerController : MonoBehaviour
 {
+    [HideInInspector] public GameData.Char character;
+    [HideInInspector] public GameData.Boat boat;
+
+    public GameObject[] boats;
+
+    public Animator[] anim;
+    private bool isAccel;
+    private bool isBrake;
+    private float accelTime;
+
     [SerializeField] private GameManager manager = null;
 
     [Space(10)]
@@ -75,6 +85,7 @@ public class PlayerController : MonoBehaviour
                 if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
                 {
                     rb.velocity = new Vector2(rb.velocity.x - (Time.deltaTime * speedThreshold / 2), rb.velocity.y);
+                    isBrake = true;
                 }
 
                 playerInput.buttonHoldTime += Time.deltaTime;
@@ -86,11 +97,23 @@ public class PlayerController : MonoBehaviour
                 if (playerInput.buttonHoldTime < playerInput.buttonHoldMin)
                 {
                     rb.AddForce(Vector2.right * accelleration );
+                    accelTime = 0.5f;
                 }
 
                 playerInput.buttonHoldTime = 0;
+                isBrake = false;
+            }
+
+            isAccel = accelTime > 0;
+
+            if (isAccel) 
+            { 
+                accelTime -= Time.deltaTime;
             }
         }
+
+        anim[character.Index].SetBool("isAccelerating", isAccel);
+        anim[character.Index].SetBool("isBrake", isBrake);
 
         rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, 0.5f, Mathf.Infinity), rb.velocity.y);
     }
@@ -117,7 +140,7 @@ public class PlayerController : MonoBehaviour
 
     private void CheckDeath()
     {
-        if ((isGrounded() && transform.rotation.eulerAngles.z > 90 && transform.rotation.eulerAngles.z < 270))
+        if ((isGrounded() && transform.rotation.eulerAngles.z > 60 && transform.rotation.eulerAngles.z < 300))
         {
             manager.isDeath = true;
         }

@@ -26,8 +26,13 @@ public class GameManager : MonoBehaviour
         Menu,
         Exit,
         Pause,
-        Death
+        Death,
+        Character,
+        Boat
     }
+
+    public GameData data;
+    public Transform BGParent;
 
     public effect PostProcessingEffect = new effect();
     public GameObject playUI;
@@ -35,6 +40,8 @@ public class GameManager : MonoBehaviour
     public GameObject exitUI;
     public GameObject pauseUI;
     public GameObject deathUI;
+    public GameObject CharacterUI;
+    public GameObject BoatUI;
 
     public TMP_Text distanceText;
     public TMP_Text speedText;
@@ -95,6 +102,8 @@ public class GameManager : MonoBehaviour
         UI.Add(UIPos.Menu, menuUI);
         UI.Add(UIPos.Pause, pauseUI);
         UI.Add(UIPos.Play, playUI);
+        UI.Add(UIPos.Character, CharacterUI);
+        UI.Add(UIPos.Boat, BoatUI);
 
 
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
@@ -111,6 +120,9 @@ public class GameManager : MonoBehaviour
 
         uiPos = UIPos.Menu;
         lastUiPos = uiPos;
+
+        player.character = data.Character[0];
+        player.boat = data.Boats[0];
     }
 
     // Update is called once per frame
@@ -250,6 +262,16 @@ public class GameManager : MonoBehaviour
         levelGenerator.ResetLevel();
         Time.timeScale = 1;
 
+        foreach(GameObject g in GameObject.FindGameObjectsWithTag("BG"))
+        {
+            Destroy(g);
+        }
+
+        foreach(Background bg in BGParent.GetComponentsInChildren<Background>())
+        {
+            bg.isPlaced = false;
+        }
+
         maxDistance = 0;
         maxSpeed = 0;
 
@@ -277,8 +299,21 @@ public class GameManager : MonoBehaviour
 
         vCamera.Follow = null;
         vCamera.LookAt = null;
+    }
 
-        //SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
+    public void GoToCharacterSelect()
+    {
+        uiPos = UIPos.Character;
+    }
+
+    public void GoToBoatSelect()
+    {
+        uiPos = UIPos.Boat;
+    }
+
+    public void GoBackToMenu()
+    {
+        uiPos = UIPos.Menu;
     }
 
     public static string ScreenShotName(int width, int height)

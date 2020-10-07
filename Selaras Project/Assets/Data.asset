@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef52a6c6b6164d247802b6b4ba3096ca, type: 3}
+  m_Script: {fileID: 11500000, guid: bca3fa19ce50dca46ae33d653a28536c, type: 3}
   m_Name: Data
   m_EditorClassIdentifier: 
   Grass:
@@ -54,8 +54,13 @@ MonoBehaviour:
   - {fileID: 7154880598634264815, guid: 9dcf46dd7e4ad2e4da2fcbdf2e694042, type: 3}
   - {fileID: 7455122696448296183, guid: b3e56512483d7134fa3a0f49a5aa1937, type: 3}
   - {fileID: 8225288416554666878, guid: d9c7eb46fd9da144885bc25bfb8c6a26, type: 3}
-  Background:
+  PhotoSpot:
+  - {fileID: 369860155144427524, guid: f323214bd2b92714ca0f405063b94f3a, type: 3}
   - {fileID: 4429675129613707575, guid: 160826a93362cbc46a54610ad46b33e0, type: 3}
+  Background:
+  - {fileID: 9157940602151359454, guid: f271d6b3c15522a449cf64c22b77b6b7, type: 3}
+  - {fileID: 5555318503947661789, guid: 2847e491b3d4e9f49a8736ff2ea81eb7, type: 3}
+  - {fileID: 6624779958825735315, guid: c22dd90745a2de348ba1982563317f02, type: 3}
   StoneObstacles:
   - {fileID: 576163665685790285, guid: 9d85fdc886a8ddd45881311292a59f56, type: 3}
   - {fileID: 5501896209727107681, guid: 08f7161a795224b4cb906a972a1327e3, type: 3}
@@ -68,11 +73,29 @@ MonoBehaviour:
   - {fileID: 797881216987798121, guid: 2236cd758e9625e448ca6f045a99253c, type: 3}
   WaterfallObstacles:
   - {fileID: 4070264963640620075, guid: cf0e656de04ad4241a7f8494203f19d7, type: 3}
-  Board:
-  - {fileID: -4032481707582436298, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
-  - {fileID: -936671485401084529, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
-  - {fileID: 7540364722606942347, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
-  - {fileID: 7877383918422554417, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
-  - {fileID: -1155405426687783956, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
-  Character: []
+  Boats:
+  - name: b1
+    Index: 0
+    Model: {fileID: -4032481707582436298, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
+  - name: b2
+    Index: 1
+    Model: {fileID: -936671485401084529, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
+  - name: b3
+    Index: 2
+    Model: {fileID: 7540364722606942347, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
+  - name: b4
+    Index: 3
+    Model: {fileID: 7877383918422554417, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
+  - name: b5
+    Index: 4
+    Model: {fileID: -1155405426687783956, guid: 03af5c7797f7ca5429f4e68d6a9884cc, type: 3}
+  Character:
+  - name: Felix
+    Index: 0
+    Model: {fileID: 21300000, guid: 3fa5cd514a83e0e4fa8da188c0f000d0, type: 3}
+    Character: {fileID: 3722789399309432535, guid: b712668a3fa725c4e9e1acde5f60388a, type: 3}
+  - name: Marzia
+    Index: 1
+    Model: {fileID: 21300000, guid: 4d0f63b656ca4034bb63b6dd12d222d1, type: 3}
+    Character: {fileID: 3722789399309432535, guid: b712668a3fa725c4e9e1acde5f60388a, type: 3}
   animals: []

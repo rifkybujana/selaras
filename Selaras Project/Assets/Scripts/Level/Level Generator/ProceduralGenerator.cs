@@ -7,7 +7,7 @@ public class ProceduralGenerator : MonoBehaviour
     [Tooltip("Seberapa mulus kurvanya")]
     [SerializeField] private int resolution = 20;
 
-    public Obstacles obstacles;
+    public GameData obstacles;
     public LayerMask playerLayer;
 
     #region private/hidden variable

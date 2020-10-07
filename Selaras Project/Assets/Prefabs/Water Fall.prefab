@@ -103,7 +103,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: -3
+  m_SortingOrder: -6
   m_Sprite: {fileID: -1647286460268303238, guid: 643f7ba31c1f5ee4885e2f5b19f4ea87, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -131,7 +131,7 @@ MonoBehaviour:
   m_HasRenderer: 1
   m_UseRendererSilhouette: 1
   m_CastsShadows: 1
-  m_SelfShadows: 0
+  m_SelfShadows: 1
   m_ApplyToSortingLayers: 00000000
   m_ShapePath:
   - {x: -4.2711415, y: -3.533163, z: 0.000000015487633}
@@ -148,7 +148,7 @@ MonoBehaviour:
   - {x: -4.3088026, y: 1.6265782, z: -0.00000015452923}
   m_ShapePathHash: 1024457014
   m_Mesh: {fileID: 0}
-  m_InstanceId: 37148
+  m_InstanceId: 37864
 --- !u!1 &8117913287545605278
 GameObject:
   m_ObjectHideFlags: 0
