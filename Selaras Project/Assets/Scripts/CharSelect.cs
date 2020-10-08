@@ -18,10 +18,10 @@ public class CharSelect : MonoBehaviour
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
 
-        img = GetComponent<Image>();
-
         nameTxt.text = character.name;
         img.sprite = character.Model;
+        img.SetNativeSize();
+        img.rectTransform.sizeDelta *= 0.3f;
     }
 
     public void ChangeCharacter()
@@ -29,5 +29,8 @@ public class CharSelect : MonoBehaviour
         player.anim[player.character.Index].gameObject.SetActive(false);
         player.anim[character.Index].gameObject.SetActive(true);
         player.character = character;
+
+        SavedData.CharIndex = character.Index;
+        SavedData.SaveData();
     }
 }

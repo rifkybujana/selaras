@@ -15,10 +15,10 @@ public class BoatSelect : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-        img = GetComponent<Image>();
 
         img.sprite = boat.Model;
         img.SetNativeSize();
+        img.rectTransform.sizeDelta *= 0.5f;
     }
 
     public void ChangeBoat()
@@ -26,5 +26,8 @@ public class BoatSelect : MonoBehaviour
         player.boats[player.boat.Index].SetActive(false);
         player.boats[boat.Index].SetActive(true);
         player.boat = boat;
+
+        SavedData.BoatIndex = boat.Index;
+        SavedData.SaveData();
     }
 }

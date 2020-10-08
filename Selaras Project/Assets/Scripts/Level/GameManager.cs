@@ -18,6 +18,13 @@ public class GameManager : MonoBehaviour
         [HideInInspector] public Vignette vignette;
         [HideInInspector] public DepthOfField depthOfField;
         [HideInInspector] public PaniniProjection paniniProjection;
+
+        public void Setup()
+        {
+            volume.sharedProfile.TryGet<Vignette>(out vignette);
+            volume.sharedProfile.TryGet<DepthOfField>(out depthOfField);
+            volume.sharedProfile.TryGet<PaniniProjection>(out paniniProjection);
+        }
     }
 
     public enum UIPos
@@ -90,12 +97,19 @@ public class GameManager : MonoBehaviour
 
     private void Awake()
     {
+        if(PlayerPrefs.GetInt("Char Index", -1) == -1)
+        {
+            SavedData.SaveData(true);
+
+            Debug.Log("Making New Saving Data...");
+        }
+
+        SavedData.GetData();
+
         vCamera.Follow = null;
         vCamera.LookAt = null;
 
-        PostProcessingEffect.volume.sharedProfile.TryGet<Vignette>(out PostProcessingEffect.vignette);
-        PostProcessingEffect.volume.sharedProfile.TryGet<DepthOfField>(out PostProcessingEffect.depthOfField);
-        PostProcessingEffect.volume.sharedProfile.TryGet<PaniniProjection>(out PostProcessingEffect.paniniProjection);
+        PostProcessingEffect.Setup();
 
         UI.Add(UIPos.Death, deathUI);
         UI.Add(UIPos.Exit, exitUI);
@@ -121,8 +135,8 @@ public class GameManager : MonoBehaviour
         uiPos = UIPos.Menu;
         lastUiPos = uiPos;
 
-        player.character = data.Character[0];
-        player.boat = data.Boats[0];
+        player.character = data.Character[SavedData.CharIndex];
+        player.boat = data.Boats[SavedData.BoatIndex];
     }
 
     // Update is called once per frame
@@ -212,6 +226,10 @@ public class GameManager : MonoBehaviour
         photoCapturedText.text = PhotoCaptured.ToString();
 
         uiPos = UIPos.Death;
+
+        SavedData.SetBestSpeed(maxSpeed);
+        SavedData.SetBestDistance(maxDistance);
+        SavedData.SaveData();
     }
 
     public void PauseGame()

@@ -69,6 +69,9 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        anim[character.Index].gameObject.SetActive(true);
+        boats[boat.Index].gameObject.SetActive(true);
     }
 
     private void Update()
