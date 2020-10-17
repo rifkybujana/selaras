@@ -39,6 +39,10 @@ public class GameManager : MonoBehaviour
     }
 
     public GameData data;
+
+    public AudioSource MainMenuMusic;
+    public AudioSource GameMusic;
+
     public Transform BGParent;
 
     public effect PostProcessingEffect = new effect();
@@ -62,6 +66,8 @@ public class GameManager : MonoBehaviour
     public Vector2 ScreenShotResolution = new Vector2(2550, 3300);
 
     public CinemachineVirtualCamera vCamera;
+    public CinemachineBasicMultiChannelPerlin Noise;
+
     public BuoyancyEffector2D BaseWaterBuoyancy;
     public LevelGenerator levelGenerator;
 
@@ -95,22 +101,61 @@ public class GameManager : MonoBehaviour
     [HideInInspector] public int maxDistance;
     [HideInInspector] public int maxSpeed;
 
+    [HideInInspector] public AudioManager audioManager;
+
     private void Awake()
     {
-        if(PlayerPrefs.GetInt("Char Index", -1) == -1)
+        audioManager = GetComponent<AudioManager>();
+        Noise = vCamera.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+        Noise.m_AmplitudeGain = 0;
+        Noise.m_FrequencyGain = 0;
+
+        StartCoroutine(SoundFadeIn(MainMenuMusic, 0.5f));
+
+        //set default
+        isDeath = false;
+        Time.timeScale = 1;
+
+        //if there's no saved file, make new
+        if (PlayerPrefs.GetInt("Char Index", -1) == -1)
         {
             SavedData.SaveData(true);
 
             Debug.Log("Making New Saving Data...");
         }
 
+        //get data from the saved file
         SavedData.GetData();
 
+        //reset the virtual camera
         vCamera.Follow = null;
         vCamera.LookAt = null;
 
+        //setting up the post processing
         PostProcessingEffect.Setup();
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
 
+        //setting up the UI
+        AddUI();
+        uiPos = UIPos.Menu;
+        lastUiPos = uiPos;
+
+        //setup the water bouyancy physics
+        startWaterFlowMagnitude = BaseWaterBuoyancy.flowMagnitude;
+        BaseWaterBuoyancy.flowMagnitude = 0;
+
+        //setting up the player
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
+        spawnPoint = player.transform.position;
+        player.character = data.Character[SavedData.CharIndex];
+        player.boat = data.Boats[SavedData.BoatIndex];
+    }
+
+    /// <summary>
+    /// Add every UI windows to the UI dictionary
+    /// </summary>
+    public void AddUI()
+    {
         UI.Add(UIPos.Death, deathUI);
         UI.Add(UIPos.Exit, exitUI);
         UI.Add(UIPos.Menu, menuUI);
@@ -118,48 +163,16 @@ public class GameManager : MonoBehaviour
         UI.Add(UIPos.Play, playUI);
         UI.Add(UIPos.Character, CharacterUI);
         UI.Add(UIPos.Boat, BoatUI);
-
-
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<PlayerController>();
-
-        PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
-
-        startWaterFlowMagnitude = BaseWaterBuoyancy.flowMagnitude;
-        BaseWaterBuoyancy.flowMagnitude = 0;
-
-        spawnPoint = player.transform.position;
-        Time.timeScale = 1;
-
-        isDeath = false;
-
-        uiPos = UIPos.Menu;
-        lastUiPos = uiPos;
-
-        player.character = data.Character[SavedData.CharIndex];
-        player.boat = data.Boats[SavedData.BoatIndex];
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (uiPos != lastUiPos)
-        {
-            Debug.Log(uiPos + " " + lastUiPos);
-            SetUI();
-        }
+        //change the UI if the uiPos was changed
+        SetUI();
 
-        if (!isStart)
-        {
-            if (isDeath) isDeath = false;
-
-            return;
-        }
-
-        if(vCamera.Follow == null)
-        {
-            vCamera.Follow = player.transform;
-            vCamera.LookAt = player.transform;
-        }
+        //if not yet started or restarted, setup and return
+        if (!isStart) return;
 
         if (isDeath)
         {
@@ -167,9 +180,11 @@ public class GameManager : MonoBehaviour
         }
         else
         {
+            //show the distance and the speed
             distanceText.text = distance().ToString() + " m";
             speedText.text = ((int)player.GetComponent<Rigidbody2D>().velocity.x).ToString() + " m/s";
 
+            //get the maximum distance and maximum speed
             GetMaxDistance();
             GetMaxSpeed();
         }
@@ -186,19 +201,43 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if(pGen != null && pGen.meshType == ProceduralGenerator.MeshType.Flat && pGen.flatType == ProceduralGenerator.FlatType.PhotoSpot)
+
+        //re-enabled the capture photo button
+        if (!CapturePhoto.enabled) StartCoroutine(EnableCapturePhoto());
+
+        CapturePhoto.gameObject.SetActive(pGen != null && pGen.meshType == ProceduralGenerator.MeshType.Flat && pGen.flatType == ProceduralGenerator.FlatType.PhotoSpot);
+    }
+
+    public static IEnumerator SoundFadeOut(AudioSource audioSource, float FadeTime)
+    {
+        float startVolume = audioSource.volume;
+
+        while (audioSource.volume > 0)
         {
-            CapturePhoto.gameObject.SetActive(true);
-        }
-        else
-        {
-            CapturePhoto.gameObject.SetActive(false);
+            audioSource.volume -= startVolume * Time.deltaTime / FadeTime;
+
+            yield return null;
         }
 
-        if (!CapturePhoto.enabled)
+        audioSource.Stop();
+        audioSource.volume = startVolume;
+    }
+
+    public static IEnumerator SoundFadeIn(AudioSource audioSource, float FadeTime)
+    {
+        float startVolume = 0.2f;
+
+        audioSource.volume = 0;
+        audioSource.Play();
+
+        while (audioSource.volume < 1.0f)
         {
-            StartCoroutine(EnableCapturePhoto());
+            audioSource.volume += startVolume * Time.deltaTime / FadeTime;
+
+            yield return null;
         }
+
+        audioSource.volume = 1f;
     }
 
     IEnumerator EnableCapturePhoto()
@@ -210,10 +249,13 @@ public class GameManager : MonoBehaviour
 
     public void SetUI()
     {
-        UI[lastUiPos].SetActive(false);
-        UI[uiPos].SetActive(true);
+        if (uiPos != lastUiPos)
+        {
+            UI[lastUiPos].SetActive(false);
+            UI[uiPos].SetActive(true);
 
-        lastUiPos = uiPos;
+            lastUiPos = uiPos;
+        }
     }
 
     public void Death()
@@ -264,6 +306,13 @@ public class GameManager : MonoBehaviour
     public void StartGame()
     {
         isStart = true;
+
+        StartCoroutine(SoundFadeIn(GameMusic, 0.5f));
+        StartCoroutine(SoundFadeOut(MainMenuMusic, 0.5f));
+
+        vCamera.Follow = player.transform;
+        vCamera.LookAt = player.transform;
+
         PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
         BaseWaterBuoyancy.flowMagnitude = startWaterFlowMagnitude;
 
@@ -272,13 +321,9 @@ public class GameManager : MonoBehaviour
 
     public void RestartGame()
     {
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        reset();
+
         PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
-        isDeath = false;
-        player.transform.position = spawnPoint;
-        player.transform.rotation = Quaternion.identity;
-        levelGenerator.ResetLevel();
-        Time.timeScale = 1;
 
         foreach(GameObject g in GameObject.FindGameObjectsWithTag("BG"))
         {
@@ -290,33 +335,25 @@ public class GameManager : MonoBehaviour
             bg.isPlaced = false;
         }
 
-        maxDistance = 0;
-        maxSpeed = 0;
-
         uiPos = UIPos.Play;
     }
 
     public void Home()
     {
-        isDeath = false;
+        reset();
+
         isStart = false;
 
-        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
-        player.transform.position = spawnPoint;
-        player.transform.rotation = Quaternion.identity;
+        StartCoroutine(SoundFadeIn(MainMenuMusic, 0.5f));
+        StartCoroutine(SoundFadeOut(GameMusic, 0.5f));
 
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
-        levelGenerator.ResetLevel();
-
         BaseWaterBuoyancy.flowMagnitude = 0;
-        Time.timeScale = 1;
-        maxDistance = 0;
-        maxSpeed = 0;
-
-        uiPos = UIPos.Menu;
 
         vCamera.Follow = null;
         vCamera.LookAt = null;
+
+        uiPos = UIPos.Menu;
     }
 
     public void GoToCharacterSelect()
@@ -370,5 +407,36 @@ public class GameManager : MonoBehaviour
     public void GetMaxDistance()
     {
         if (distance() > maxDistance) maxDistance = distance();
+    }
+
+    public void Shake()
+    {
+        StartCoroutine(CameraShake());
+    }
+
+    IEnumerator CameraShake()
+    {
+        Noise.m_AmplitudeGain = 1;
+        Noise.m_FrequencyGain = 1;
+
+        yield return new WaitForSeconds(0.2f);
+
+        Noise.m_AmplitudeGain = 0;
+        Noise.m_FrequencyGain = 0;
+    }
+
+    void reset()
+    {
+        isDeath = false;
+
+        player.GetComponent<Rigidbody2D>().velocity = Vector2.zero;
+        player.transform.position = spawnPoint;
+        player.transform.rotation = Quaternion.identity;
+
+        Time.timeScale = 1;
+        maxDistance = 0;
+        maxSpeed = 0;
+
+        levelGenerator.ResetLevel();
     }
 }

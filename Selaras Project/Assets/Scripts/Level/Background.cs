@@ -11,12 +11,10 @@ public class Background : MonoBehaviour
     public GameData data;
 
     [SerializeField]
-    private Transform SpawnPos;
-
-    private Renderer m_renderer;
-
+    private Transform SpawnPos = null;
     private Transform cam;
 
+    private Renderer m_renderer;
     private GameManager manager;
 
     private float selisihJarak;
@@ -47,13 +45,10 @@ public class Background : MonoBehaviour
         if (m_renderer.isVisible && !isPlaced)
         {
             //place
-            GameObject obj = Instantiate(data.Background[index], SpawnPos.position, Quaternion.identity);
+            Instantiate(data.Background[index], SpawnPos.position, Quaternion.identity);
             isPlaced = true;
         }
 
-        if (isPlaced && !m_renderer.isVisible && !isStartBackground)
-        {
-            Destroy(gameObject);
-        }
+        if (isPlaced && !m_renderer.isVisible && !isStartBackground) Destroy(gameObject); 
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(fileName = "data", menuName = "Random Object Generator/Generator Data")]
+[CreateAssetMenu(fileName = "data", menuName = "Tools/Game Data")]
 public class GameData : ScriptableObject
 {
     [Header("Background")]

@@ -40,28 +40,16 @@ public class PlayerController : MonoBehaviour
 
     private Rigidbody2D rb;
 
-    private float Map(float x, float in_min, float in_max, float out_min, float out_max)
-    {
-        return Mathf.Clamp((x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min, out_min, out_max);
-    }
+    public Collider2D Ground() => Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask);
 
     [HideInInspector]
-    public bool isGrounded()
-    {
-        return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask);
-    }
+    public bool isGrounded() => Ground();
 
     [HideInInspector]
-    public Transform GroundPos()
-    {
-        return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask).GetComponent<Transform>();
-    }
+    public Transform GroundPos() => Ground().GetComponent<Transform>();
 
     [HideInInspector]
-    public BuoyancyEffector2D GroundBuoyancy()
-    {
-        return Physics2D.OverlapBox(transform.position - new Vector3(GroundCheckPos.x, -GroundCheckPos.y, 0), GroundCheckScale, 0, GroundLayerMask).GetComponent<BuoyancyEffector2D>();
-    }
+    public BuoyancyEffector2D GroundBuoyancy() => Ground().GetComponent<BuoyancyEffector2D>();
 
     #endregion
 
@@ -128,6 +116,12 @@ public class PlayerController : MonoBehaviour
             manager.isDeath = true;
         }
 
+        if(rb.velocity.y < -speedThreshold / 2)
+        {
+            manager.audioManager.PlaySound("Hit");
+            manager.Shake();
+        }
+
         manager.pGen = collision.gameObject.GetComponent<ProceduralGenerator>();
     }
 
@@ -136,6 +130,12 @@ public class PlayerController : MonoBehaviour
         if (rb.velocity.y < -speedThreshold)
         {
             manager.isDeath = true;
+        }
+
+        if (rb.velocity.y < -speedThreshold / 2)
+        {
+            manager.audioManager.PlaySound("Hit");
+            manager.Shake();
         }
 
         manager.pGen = collision.gameObject.GetComponent<ProceduralGenerator>();
