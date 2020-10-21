@@ -19,19 +19,10 @@ and direction
 Rocks, water ramp, stream from
 waterfall
 
-## Gameplay Loop
-
-Unlock New Content > Explore Wild Life > Take The Wild Life Photo's
-
 ## Other Feature
 
-### CANOE CUSTOMIZATION
-Adding customization to the canoe or the character could help making the game more
-fun, it also enables the players to have a sense of uniqueness to the game character.
+### Change Character
+### Change Canoe
+### "Your" Best Score
 
-### BOOSTERS
-You can also add boosters to help the canoe moves faster or can jump over obstacles!
-
-### VARIETY OF MODES
-Other modes like time trial or high score (by collecting as many photos as possible) would
-be a welcome addition to the game
+for the procedural generator system, we combine a custom mesh with bezier curve so that will make a smooth level that flow down
