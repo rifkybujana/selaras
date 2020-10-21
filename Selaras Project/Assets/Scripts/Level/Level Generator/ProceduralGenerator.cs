@@ -52,9 +52,9 @@ public class ProceduralGenerator : MonoBehaviour
 
         //merandomize tipe mesh
         int RandomizeType = Random.Range(1, 3);
-
+        
         //jika bukan di awal generasi dan hasil dari random itu = 2
-        if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2 && levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 1].meshType != MeshType.Flat)
+        if (levelGenerator.MeshObjects.Count > 2 && RandomizeType == 2 && levelGenerator.MeshObjects[levelGenerator.MeshObjects.Count - 2].meshType != MeshType.Flat)
         {
             meshType = MeshType.Flat;
             transform.position = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
@@ -156,8 +156,13 @@ public class ProceduralGenerator : MonoBehaviour
         mesh.vertices = vertices.ToArray();
         mesh.triangles = triangles.ToArray();
 
+        Vector3 lastPoint = vertices[vertices.Count - 1] * transform.localScale.x;
+        if (meshType == MeshType.Flat) lastPoint = new Vector3(lastPoint.x, lastPoint.y - 1);
+
+        Debug.Log(lastPoint + " " + transform.localPosition.y);
+
         //set titik terakhir dari level generator menjadi vertices terakhir Procedural Generator ini
-        levelGenerator.lastPoint += vertices[vertices.Count - 1] * transform.localScale.x;
+        levelGenerator.lastPoint += lastPoint;
 
         AddCollider();
     }
