@@ -25,7 +25,7 @@ public class WaterFall : MonoBehaviour
 
             float jarak = player.transform.position.x - transform.position.x;
 
-            pGen.flowMagnitude = radius;
+            pGen.flowMagnitude = radius * 3;
             pGen.flowAngle = jarak < 0 ? 180 : 0;
         }
         else

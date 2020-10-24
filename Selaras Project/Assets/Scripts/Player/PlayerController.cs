@@ -73,7 +73,7 @@ public class PlayerController : MonoBehaviour
             //Jika player menekan mouse kiri
             if (Input.GetMouseButton(0))
             {
-                if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin)
+                if (playerInput.buttonHoldTime >= playerInput.buttonHoldMin && rb.velocity.x > 0.5f)
                 {
                     rb.velocity = new Vector2(rb.velocity.x - (Time.deltaTime * speedThreshold / 2), rb.velocity.y);
                     isBrake = true;
@@ -105,8 +105,6 @@ public class PlayerController : MonoBehaviour
 
         anim[character.Index].SetBool("isAccelerating", isAccel);
         anim[character.Index].SetBool("isBrake", isBrake);
-
-        rb.velocity = new Vector2(Mathf.Clamp(rb.velocity.x, 0.5f, Mathf.Infinity), rb.velocity.y);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)

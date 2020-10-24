@@ -60,7 +60,7 @@ public class ProceduralGenerator : MonoBehaviour
             transform.position = new Vector3(transform.position.x, transform.position.y - 1f, transform.position.z);
 
             int RandomType = Random.Range(1, 3);
-            flatType = RandomType == 1 ? FlatType.PhotoSpot : FlatType.WaterFall;
+            flatType = RandomType == 1 ? FlatType.WaterFall : FlatType.PhotoSpot;
         }
         else
         {
@@ -76,6 +76,13 @@ public class ProceduralGenerator : MonoBehaviour
         GenerateMesh();
 
         GenerateObstacle();
+    }
+
+    private void Update()
+    {
+        //WATER PHYSIC
+
+
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -104,16 +111,13 @@ public class ProceduralGenerator : MonoBehaviour
 
         if(meshType == MeshType.Flat )
         {
-            if(flatType == FlatType.WaterFall)
-            {
-                int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
+            //place waterfall
+            int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
+            GameObject WaterFall = Instantiate(obstacles.RandomizedWaterfall(), Vector3.zero, Quaternion.identity, transform);
+            WaterFall.transform.localPosition = v[random];
+            WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
 
-                GameObject WaterFall = Instantiate(obstacles.RandomizedWaterfall(), Vector3.zero, Quaternion.identity, transform);
-
-                WaterFall.transform.localPosition = v[random];
-                WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
-            }
-            else
+            if (flatType == FlatType.PhotoSpot)
             {
                 //Spawn Photo Spot
                 GameObject g = Instantiate(obstacles.RandomizedBackground(), transform);

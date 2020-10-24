@@ -3,6 +3,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine.Rendering.Universal;
 using UnityEngine.Rendering;
 using UnityEngine.UI;
+using UnityEngine.Windows;
 using Cinemachine;
 using TMPro;
 using System.Collections;
@@ -35,7 +36,8 @@ public class GameManager : MonoBehaviour
         Pause,
         Death,
         Character,
-        Boat
+        Boat,
+        Camera
     }
 
     public GameData data;
@@ -46,6 +48,9 @@ public class GameManager : MonoBehaviour
     public Transform BGParent;
 
     public effect PostProcessingEffect = new effect();
+
+    public Image PictureShow;
+
     public GameObject playUI;
     public GameObject menuUI;
     public GameObject exitUI;
@@ -53,6 +58,7 @@ public class GameManager : MonoBehaviour
     public GameObject deathUI;
     public GameObject CharacterUI;
     public GameObject BoatUI;
+    public GameObject CameraUI;
 
     public TMP_Text distanceText;
     public TMP_Text speedText;
@@ -134,6 +140,8 @@ public class GameManager : MonoBehaviour
         //setting up the post processing
         PostProcessingEffect.Setup();
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
+        PostProcessingEffect.vignette.center.value = new Vector2(0.2f, 0f);
+        PostProcessingEffect.vignette.intensity.value = 0.05f;
 
         //setting up the UI
         AddUI();
@@ -163,6 +171,7 @@ public class GameManager : MonoBehaviour
         UI.Add(UIPos.Play, playUI);
         UI.Add(UIPos.Character, CharacterUI);
         UI.Add(UIPos.Boat, BoatUI);
+        UI.Add(UIPos.Camera, CameraUI);
     }
 
     // Update is called once per frame
@@ -189,7 +198,7 @@ public class GameManager : MonoBehaviour
             GetMaxSpeed();
         }
 
-        if (Input.GetKeyDown(KeyCode.Escape))
+        if (Input.GetKeyDown(KeyCode.Escape) && uiPos != UIPos.Camera)
         {
             if(uiPos == UIPos.Pause)
             {
@@ -379,6 +388,32 @@ public class GameManager : MonoBehaviour
                               System.DateTime.Now.ToString("yyyy-MM-dd_HH-mm-ss"));
     }
 
+    public void OpenPic(Texture2D tx)
+    {
+        uiPos = UIPos.Camera;
+
+        Time.timeScale = 0;
+
+        PostProcessingEffect.vignette.center.value = new Vector2(0.5f, 0.5f);
+        PostProcessingEffect.vignette.intensity.value = 0.255f;
+
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
+
+        PictureShow.sprite = Sprite.Create(tx, new Rect(0, 0, tx.width, tx.height), new Vector2(0.5f, 0.5f));
+    }
+
+    public void CloseCamera()
+    {
+        uiPos = UIPos.Play;
+
+        Time.timeScale = 1;
+
+        PostProcessingEffect.vignette.center.value = new Vector2(0.2f, 0f);
+        PostProcessingEffect.vignette.intensity.value = 0.05f;
+
+        PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+    }
+
     public void TakePhoto()
     {
         StartCoroutine(CaptureScreen());
@@ -394,9 +429,14 @@ public class GameManager : MonoBehaviour
 
         yield return new WaitForEndOfFrame();
 
-        ScreenCapture.CaptureScreenshot(ScreenShotName((int)ScreenShotResolution.x, (int)ScreenShotResolution.y));
+        string path = ScreenShotName((int)ScreenShotResolution.x, (int)ScreenShotResolution.y);
+
+        ScreenCapture.CaptureScreenshot(path);
+        Texture2D tx = ScreenCapture.CaptureScreenshotAsTexture();
 
         GameObject.Find("Canvas").GetComponent<Canvas>().enabled = true;
+
+        OpenPic(tx);
     }
 
     public void GetMaxSpeed()
