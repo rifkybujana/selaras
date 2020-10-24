@@ -8,6 +8,11 @@ public class PlayerController : MonoBehaviour
     public GameObject[] boats;
 
     public Animator[] anim;
+
+    [Space(5)]
+    public ParticleSystem splash;
+    public Transform splashPos;
+
     private bool isAccel;
     private bool isBrake;
     private float accelTime;
@@ -102,7 +107,18 @@ public class PlayerController : MonoBehaviour
                 accelTime -= Time.deltaTime;
             }
         }
+        else
+        {
+            if (Input.GetMouseButton(0))
+            {
+                rb.angularDrag -= Time.deltaTime;
+            }
+        }
 
+        if (rb.angularDrag < 0.05f)
+        {
+            rb.angularDrag += Time.deltaTime / 2;
+        }
         anim[character.Index].SetBool("isAccelerating", isAccel);
         anim[character.Index].SetBool("isBrake", isBrake);
     }
@@ -116,6 +132,8 @@ public class PlayerController : MonoBehaviour
 
         if(rb.velocity.y < -speedThreshold / 2)
         {
+            Instantiate(splash.gameObject, splashPos.position, Quaternion.identity);
+
             manager.audioManager.PlaySound("Hit");
             manager.Shake();
         }
@@ -132,6 +150,8 @@ public class PlayerController : MonoBehaviour
 
         if (rb.velocity.y < -speedThreshold / 2)
         {
+            Instantiate(splash.gameObject, splashPos.position, Quaternion.identity);
+
             manager.audioManager.PlaySound("Hit");
             manager.Shake();
         }

@@ -9,6 +9,7 @@ public class GameData : ScriptableObject
     public GameObject[] Grass;
     public GameObject[] Stones;
     public GameObject[] Trees;
+    public GameObject[] otherObject;
 
     public GameObject[] PhotoSpot;
     public GameObject[] Background;
@@ -42,6 +43,7 @@ public class GameData : ScriptableObject
 
     public GameObject RandomizedGrass() => Grass[Random.Range(0, Grass.Length)];
     public GameObject RandomizedStones(bool obstacle = false) => obstacle ? StoneObstacles[Random.Range(0, Stones.Length)] : Stones[Random.Range(0, Stones.Length)];
+    public GameObject RandomizedObject() => otherObject[Random.Range(0, otherObject.Length)];
     public GameObject RandomizedTrees() => Trees[Random.Range(0, Trees.Length)];
     public GameObject RandomizedWaterfall() => WaterfallObstacles[Random.Range(0, WaterfallObstacles.Length)];
     public GameObject RandomizedBackground() => PhotoSpot[Random.Range(0, PhotoSpot.Length)];

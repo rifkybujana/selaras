@@ -4,6 +4,7 @@ using UnityEngine;
 
 public static class SavedData
 {
+    public static int bestScore;
     public static int BestDistance;
     public static int BestSpeed;
 
@@ -26,6 +27,14 @@ public static class SavedData
         }
     }
 
+    public static void SetBestScore(int val)
+    {
+        if(val > bestScore)
+        {
+            bestScore = val;
+        }
+    }
+
     public static void SaveData(bool makeNewFile = false)
     {
         if (makeNewFile)
@@ -33,6 +42,7 @@ public static class SavedData
             PlayerPrefs.SetInt("Char Index", 0);
             PlayerPrefs.SetInt("Boat Index", 0);
             PlayerPrefs.SetInt("Best Distance", 0);
+            PlayerPrefs.SetInt("Best Score", 0);
             PlayerPrefs.SetInt("Best Speed", 0);
         }
         else
@@ -40,6 +50,7 @@ public static class SavedData
             PlayerPrefs.SetInt("Char Index", CharIndex);
             PlayerPrefs.SetInt("Boat Index", BoatIndex);
             PlayerPrefs.SetInt("Best Distance", BestDistance);
+            PlayerPrefs.SetInt("Best Score", bestScore);
             PlayerPrefs.SetInt("Best Speed", BestSpeed);
         }
     }
@@ -48,6 +59,7 @@ public static class SavedData
     {
         BestDistance = PlayerPrefs.GetInt("Best Distance");
         BestSpeed = PlayerPrefs.GetInt("Best Speed");
+        bestScore = PlayerPrefs.GetInt("Best Score");
         CharIndex = PlayerPrefs.GetInt("Char Index");
         BoatIndex = PlayerPrefs.GetInt("Boat Index");
     }

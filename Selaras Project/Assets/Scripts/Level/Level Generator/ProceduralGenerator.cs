@@ -78,13 +78,6 @@ public class ProceduralGenerator : MonoBehaviour
         GenerateObstacle();
     }
 
-    private void Update()
-    {
-        //WATER PHYSIC
-
-
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //jika menyentuh player, buat generasi baru
@@ -111,8 +104,13 @@ public class ProceduralGenerator : MonoBehaviour
 
         if(meshType == MeshType.Flat )
         {
+            //place other obj
+            GameObject gr = Instantiate(obstacles.RandomizedObject(), transform);
+            int randomIndex = Random.Range(5, v.Count * 3 / 4);
+            gr.transform.localPosition = new Vector2(v[randomIndex].x, gr.transform.localPosition.y);
+
             //place waterfall
-            int random = Random.Range(v.Count - (v.Count * 3 / 4), v.Count - (v.Count / 4));
+            int random = Random.Range(v.Count * 1 / 5, v.Count * 4 / 5);
             GameObject WaterFall = Instantiate(obstacles.RandomizedWaterfall(), Vector3.zero, Quaternion.identity, transform);
             WaterFall.transform.localPosition = v[random];
             WaterFall.transform.localScale = new Vector3(0.3f, 0.3f, 0.3f);
@@ -132,6 +130,11 @@ public class ProceduralGenerator : MonoBehaviour
         }
         else
         {
+            GameObject gr = Instantiate(obstacles.RandomizedObject(), transform);
+            int randomIndex = Random.Range(5, 15);
+            gr.transform.localPosition = new Vector2(v[randomIndex].x, gr.transform.localPosition.y);
+            
+
             for (int i = 5; i < 20; i += 5)
             {
                 GameObject g = obstacles.GetRandom(transform);

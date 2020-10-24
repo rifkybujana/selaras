@@ -54,6 +54,10 @@ MonoBehaviour:
   - {fileID: 7154880598634264815, guid: 9dcf46dd7e4ad2e4da2fcbdf2e694042, type: 3}
   - {fileID: 7455122696448296183, guid: b3e56512483d7134fa3a0f49a5aa1937, type: 3}
   - {fileID: 8225288416554666878, guid: d9c7eb46fd9da144885bc25bfb8c6a26, type: 3}
+  otherObject:
+  - {fileID: 7442682429946751087, guid: ee9d287d478c2294dae261a701dd2965, type: 3}
+  - {fileID: 2219062799499904235, guid: 13bcd6a3dfc5bb94aa62b41cd84e05f4, type: 3}
+  - {fileID: 4050151789389599012, guid: 3561c258178c88647b802128202c1c11, type: 3}
   PhotoSpot:
   - {fileID: 369860155144427524, guid: f323214bd2b92714ca0f405063b94f3a, type: 3}
   - {fileID: 4429675129613707575, guid: 160826a93362cbc46a54610ad46b33e0, type: 3}

@@ -42,7 +42,7 @@ public class GameManager : MonoBehaviour
 
     public GameData data;
 
-    public AudioSource MainMenuMusic;
+    public AudioSource BaseSFX;
     public AudioSource GameMusic;
 
     public Transform BGParent;
@@ -66,6 +66,8 @@ public class GameManager : MonoBehaviour
     public TMP_Text maxDistanceText;
     public TMP_Text maxSpeedText;
     public TMP_Text photoCapturedText;
+    public TMP_Text scoreText;
+    public TMP_Text yourBest;
 
     public Button CapturePhoto;
 
@@ -116,7 +118,7 @@ public class GameManager : MonoBehaviour
         Noise.m_AmplitudeGain = 0;
         Noise.m_FrequencyGain = 0;
 
-        StartCoroutine(SoundFadeIn(MainMenuMusic, 0.5f));
+        StartCoroutine(SoundFadeIn(BaseSFX, 0.5f));
 
         //set default
         isDeath = false;
@@ -212,7 +214,7 @@ public class GameManager : MonoBehaviour
 
 
         //re-enabled the capture photo button
-        if (!CapturePhoto.enabled) StartCoroutine(EnableCapturePhoto());
+        if (!CapturePhoto.interactable) StartCoroutine(EnableCapturePhoto());
 
         CapturePhoto.gameObject.SetActive(pGen != null && pGen.meshType == ProceduralGenerator.MeshType.Flat && pGen.flatType == ProceduralGenerator.FlatType.PhotoSpot);
     }
@@ -253,7 +255,7 @@ public class GameManager : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
 
-        CapturePhoto.enabled = true;
+        CapturePhoto.interactable = true;
     }
 
     public void SetUI()
@@ -272,14 +274,20 @@ public class GameManager : MonoBehaviour
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
         Time.timeScale = 0.5f;
 
+        int score = maxDistance + (50 * maxSpeed) + (200 * PhotoCaptured);
+
         maxDistanceText.text = maxDistance + " m";
-        maxSpeedText.text = maxSpeed + " m/s";
-        photoCapturedText.text = PhotoCaptured.ToString();
+        maxSpeedText.text = string.Format("50 x {0} m/s", maxSpeed);
+        photoCapturedText.text = string.Format("200 x {0}", PhotoCaptured.ToString());
+        scoreText.text = score.ToString();
+
+        yourBest.text = score >= SavedData.bestScore ? "Best Score!" : string.Format("Your Best: {0}", SavedData.bestScore);
 
         uiPos = UIPos.Death;
 
         SavedData.SetBestSpeed(maxSpeed);
         SavedData.SetBestDistance(maxDistance);
+        SavedData.SetBestScore(score);
         SavedData.SaveData();
     }
 
@@ -317,7 +325,6 @@ public class GameManager : MonoBehaviour
         isStart = true;
 
         StartCoroutine(SoundFadeIn(GameMusic, 0.5f));
-        StartCoroutine(SoundFadeOut(MainMenuMusic, 0.5f));
 
         vCamera.Follow = player.transform;
         vCamera.LookAt = player.transform;
@@ -353,7 +360,6 @@ public class GameManager : MonoBehaviour
 
         isStart = false;
 
-        StartCoroutine(SoundFadeIn(MainMenuMusic, 0.5f));
         StartCoroutine(SoundFadeOut(GameMusic, 0.5f));
 
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
@@ -419,7 +425,7 @@ public class GameManager : MonoBehaviour
         StartCoroutine(CaptureScreen());
 
         PhotoCaptured++;
-        CapturePhoto.enabled = false;
+        CapturePhoto.interactable = false;
     }
 
     public IEnumerator CaptureScreen()
