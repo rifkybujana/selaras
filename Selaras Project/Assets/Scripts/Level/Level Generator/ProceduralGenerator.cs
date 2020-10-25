@@ -166,8 +166,6 @@ public class ProceduralGenerator : MonoBehaviour
         Vector3 lastPoint = vertices[vertices.Count - 1] * transform.localScale.x;
         if (meshType == MeshType.Flat) lastPoint = new Vector3(lastPoint.x, lastPoint.y - 1);
 
-        Debug.Log(lastPoint + " " + transform.localPosition.y);
-
         //set titik terakhir dari level generator menjadi vertices terakhir Procedural Generator ini
         levelGenerator.lastPoint += lastPoint;
 

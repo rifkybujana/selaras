@@ -60,6 +60,8 @@ public class GameManager : MonoBehaviour
     public GameObject BoatUI;
     public GameObject CameraUI;
 
+    public TMP_Text Tutorial;
+
     public TMP_Text distanceText;
     public TMP_Text speedText;
 
@@ -111,6 +113,8 @@ public class GameManager : MonoBehaviour
 
     [HideInInspector] public AudioManager audioManager;
 
+    [HideInInspector] public bool firstTimePlay;
+
     private void Awake()
     {
         audioManager = GetComponent<AudioManager>();
@@ -127,6 +131,8 @@ public class GameManager : MonoBehaviour
         //if there's no saved file, make new
         if (PlayerPrefs.GetInt("Char Index", -1) == -1)
         {
+            Tutorial.gameObject.SetActive(true);
+            firstTimePlay = true;
             SavedData.SaveData(true);
 
             Debug.Log("Making New Saving Data...");
@@ -179,11 +185,21 @@ public class GameManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!firstTimePlay)
+        {
+            Tutorial.gameObject.SetActive(false);
+        }
+
         //change the UI if the uiPos was changed
         SetUI();
 
         //if not yet started or restarted, setup and return
         if (!isStart) return;
+
+        if(distance() > 300 && firstTimePlay)
+        {
+            firstTimePlay = false;
+        }
 
         if (isDeath)
         {
@@ -365,9 +381,6 @@ public class GameManager : MonoBehaviour
         PostProcessingEffect.depthOfField.focusDistance.value = 0.1f;
         BaseWaterBuoyancy.flowMagnitude = 0;
 
-        vCamera.Follow = null;
-        vCamera.LookAt = null;
-
         uiPos = UIPos.Menu;
     }
 
@@ -418,6 +431,11 @@ public class GameManager : MonoBehaviour
         PostProcessingEffect.vignette.intensity.value = 0.05f;
 
         PostProcessingEffect.depthOfField.focusDistance.value = 0.5f;
+    }
+
+    public void OpenPictureFolder()
+    {
+        System.Diagnostics.Process.Start("explorer.exe", string.Format("{0}/screenshots", Application.dataPath).Replace(@"/", @"\"));
     }
 
     public void TakePhoto()

@@ -44,11 +44,18 @@ public class Background : MonoBehaviour
 
         if (m_renderer.isVisible && !isPlaced)
         {
-            //place
-            Instantiate(data.Background[index], SpawnPos.position, Quaternion.identity);
-            isPlaced = true;
+            Debug.Log("test");
+            place();
         }
 
         if (isPlaced && !m_renderer.isVisible && !isStartBackground) Destroy(gameObject); 
+    }
+
+    public void place()
+    {
+        //place
+        Instantiate(data.Background[index], SpawnPos.position, Quaternion.identity);
+        isPlaced = true;
+
     }
 }
